@@ -1,0 +1,179 @@
+--Example 1:
+CREATE DATABASE SampleDB;
+GO
+
+
+--Example 2:
+CREATE DATABASE [MovieDB]
+
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'MovieDB', FILENAME = N'D:\MSSQL\TESTDATA\MovieDB.mdf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'MovieDB_log', FILENAME = N'L:\MSSQL\TESTLOG\MovieDB_log.ldf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
+GO
+ALTER DATABASE [MovieDB] ADD FILEGROUP [ACTION]
+GO
+ALTER DATABASE [MovieDB] ADD FILEGROUP [COMEDY]
+GO
+ALTER DATABASE [MovieDB] ADD FILEGROUP [HORROR]
+GO
+ALTER DATABASE [MovieDB] ADD FILEGROUP [ROMANTIC]
+GO
+
+
+
+USE [MovieDB]
+GO
+IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY') ALTER DATABASE [MovieDB] MODIFY FILEGROUP [PRIMARY] DEFAULT
+GO
+--adding files into filegroups
+USE [master]
+GO
+ALTER DATABASE [MovieDB] ADD FILE ( NAME = N'Fast and Furious', FILENAME = N'D:\MSSQL\TESTDATA\Fast and Furious.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [ACTION]
+GO
+ALTER DATABASE [MovieDB] ADD FILE ( NAME = N'Aki and Pawpaw', FILENAME = N'D:\MSSQL\TESTDATA\Aki and Pawpaw.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [COMEDY]
+GO
+ALTER DATABASE [MovieDB] ADD FILE ( NAME = N'The Saw', FILENAME = N'D:\MSSQL\TESTDATA\The Saw.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [HORROR]
+GO
+ALTER DATABASE [MovieDB] ADD FILE ( NAME = N'Love', FILENAME = N'D:\MSSQL\TESTDATA\Love.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [ROMANTIC]
+GO
+USE [MovieDB]
+GO
+ALTER AUTHORIZATION ON DATABASE::[MovieDB] TO [sa]
+GO
+
+--Example 3:
+--Creating a Database
+
+create database TescoDB
+
+--Adding File Groups Into a Database
+USE [master]
+GO
+ALTER DATABASE [TescoDB] ADD FILEGROUP [Chelf1]
+GO
+ALTER DATABASE [TescoDB] ADD FILEGROUP [Chelf2]
+GO
+ALTER DATABASE [TescoDB] ADD FILEGROUP [Chelf3]
+GO
+ALTER DATABASE [TescoDB] ADD FILEGROUP [Chelf4]
+GO
+ALTER DATABASE [TescoDB] ADD FILEGROUP [Chelf5]
+GO
+
+
+--Adding Files Into Filegroups
+USE [master]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Milk', FILENAME = N'D:\MSSQL\DEFAULT\Milk.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf1]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Sugar', FILENAME = N'D:\MSSQL\DEFAULT\Sugar.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf1]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Tea', FILENAME = N'D:\MSSQL\DEFAULT\Tea.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf1]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Fruits', FILENAME = N'D:\MSSQL\DEFAULT\Fruits.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf2]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Beer', FILENAME = N'D:\MSSQL\DEFAULT\Beer.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf3]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Whiskey', FILENAME = N'D:\MSSQL\DEFAULT\Whiskey.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf3]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Wine', FILENAME = N'D:\MSSQL\DEFAULT\Wine.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf3]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Vegetables', FILENAME = N'D:\MSSQL\DEFAULT\Vegetables.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf4]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Clothes', FILENAME = N'D:\MSSQL\DEFAULT\Clothes.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf5]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Mirror', FILENAME = N'D:\MSSQL\DEFAULT\Mirror.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf5]
+GO
+ALTER DATABASE [TescoDB] ADD FILE ( NAME = N'Shoes', FILENAME = N'D:\MSSQL\DEFAULT\Shoes.ndf' , SIZE = 8192KB , FILEGROWTH = 65536KB ) TO FILEGROUP [Chelf5]
+GO
+
+
+--Example 4:
+--DB creation with multiple files and filegroups
+
+CREATE DATABASE SampleDB
+ON 
+PRIMARY (
+    NAME = SampleDB_Data,
+    FILENAME = 'C:\SQLData\SampleDB.mdf',
+    SIZE = 10MB,
+    MAXSIZE = 100MB,
+    FILEGROWTH = 5MB
+)
+LOG ON (
+    NAME = SampleDB_Log,
+    FILENAME = 'C:\SQLLogs\SampleDB_log.ldf',
+    SIZE = 5MB,
+    MAXSIZE = 25MB,
+    FILEGROWTH = 5MB
+);
+GO
+
+
+--Example 5:
+--Random Sample DB creation scripts
+USE master;
+GO
+CREATE DATABASE Sales
+ON
+( NAME = Sales_dat,
+    FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\saledat.mdf',
+    SIZE = 10,
+    MAXSIZE = 50,
+    FILEGROWTH = 5 )
+LOG ON
+( NAME = Sales_log,
+    FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\DATA\salelog.ldf',
+    SIZE = 5MB,
+    MAXSIZE = 25MB,
+    FILEGROWTH = 5MB ) ;
+GO
+
+--Example 6
+-Create a database that has filegroups
+USE master;
+GO
+CREATE DATABASE Sales
+ON PRIMARY
+( NAME = SPri1_dat,
+    FILENAME = 'D:\SalesData\SPri1dat.mdf',
+    SIZE = 10,
+    MAXSIZE = 50,
+    FILEGROWTH = 15% ),
+( NAME = SPri2_dat,
+    FILENAME = 'D:\SalesData\SPri2dt.ndf',
+    SIZE = 10,
+    MAXSIZE = 50,
+    FILEGROWTH = 15% ),
+FILEGROUP SalesGroup1
+( NAME = SGrp1Fi1_dat,
+    FILENAME = 'D:\SalesData\SG1Fi1dt.ndf',
+    SIZE = 10,
+    MAXSIZE = 50,
+    FILEGROWTH = 5 ),
+( NAME = SGrp1Fi2_dat,
+    FILENAME = 'D:\SalesData\SG1Fi2dt.ndf',
+    SIZE = 10,
+    MAXSIZE = 50,
+    FILEGROWTH = 5 ),
+FILEGROUP SalesGroup2
+( NAME = SGrp2Fi1_dat,
+    FILENAME = 'D:\SalesData\SG2Fi1dt.ndf',
+    SIZE = 10,
+    MAXSIZE = 50,
+    FILEGROWTH = 5 ),
+( NAME = SGrp2Fi2_dat,
+    FILENAME = 'D:\SalesData\SG2Fi2dt.ndf',
+    SIZE = 10,
+    MAXSIZE = 50,
+    FILEGROWTH = 5 )
+LOG ON
+( NAME = Sales_log,
+    FILENAME = 'E:\SalesLog\salelog.ldf',
+    SIZE = 5MB,
+    MAXSIZE = 25MB,
+    FILEGROWTH = 5MB ) ;
+GO
+
