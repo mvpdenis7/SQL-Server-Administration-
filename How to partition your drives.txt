@@ -1,0 +1,83 @@
+HOW TO PARTITION YOUR DRIVES AND SQL INSTALLATION
+
+1)	Partitioning Drives
+
+	FOR THOSE HAVING 500+ FREE SPACE
+
+👉 DATA = 100GB (D)
+👉 LOG 	= 100GB (L)
+👉 TEMPDB = 100GB (T)
+👉 BACKUP = 100GB (B)
+👉 SYSTEM = 100GB (S)
+
+----------------
+
+	FOR THOSE HAVING 400+ BUT (LESS THAN 500) FREE SPACE
+
+👉 DATA = 60GB (D)
+👉 LOG 	= 60GB (L)
+👉 TEMPDB = 60GB (T)
+👉 BACKUP = 60GB (B)
+👉 SYSTEM = 60GB (S)
+
+-------------------
+
+	FOR THOSE HAVING 250 + (BUT LESS THAN 400) FREE SPACE
+
+👉 DATA = 40GB (D)
+👉 LOG = 40GB (L)
+👉 TEMPDB = 40GB (T)  
+👉 BACKUP = 40GB (B)
+👉 SYSTEM = 40GB (S)
+
+NB: Anything lower than 250 free space, use 25GB per drive.
+
+BELOW ARE THE FOLDERS THAT YOU HAVE TO CREATE INSIDE THE VARIOUS DRIVES
+Make sure you first create the MSSQL folder in all drives and inside the MSSQL folder, you create the following sub-folders
+
+In DATA drive
+👉MSSQL --> 
+👉PROD
+👉DEVD
+👉DEFAULT
+👉STG
+👉TEST
+---------
+
+In LOG drive
+👉MSSQL --> 
+👉PROD
+👉DEVD
+👉DEFAULT
+👉STG
+👉TEST
+----------
+
+In BACKUP drive
+👉MSSQL --> 
+👉PROD
+👉DEVD
+👉DEFAULT
+👉STG
+👉TEST
+-----------
+
+In TEMPDB drive - this has further subfolders
+👉MSSQL --> 
+👉PROD-->TEMPDBDATA and TEMPDBLOG 
+👉DEV-->TEMPDBDATA and TEMPDBLOG
+👉DEFAULT-->TEMPDBDATA and TEMPDBLOG 
+👉STG-->TEMPDBDATA and TEMPDBLOG
+👉TEST-->TEMPDBDATA and TEMPDBLOG
+-------------
+In SYSTEM drive - this has further subfolders
+👉MSSQL --> 
+👉ROOT-->
+		DEFAULT
+		PROD
+		DEV
+		TEST
+		STG 
+👉 SHAREDFEATURES 
+👉 SHAREDFEATURESx86 
+----------
