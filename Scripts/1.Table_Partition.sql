@@ -23,6 +23,7 @@
 ============================================================================== */
 
 -- Create Left Range Partition Functions based on Years
+use SchoolDB
 CREATE PARTITION FUNCTION PartitionByYear (DATE)
 AS RANGE LEFT FOR VALUES ('2023-12-31', '2024-12-31', '2025-12-31')
 
@@ -40,13 +41,13 @@ FROM sys.partition_functions
 ============================================================================== */
 
 -- Create Filegroups in SalesDB
-ALTER DATABASE SalesDB ADD FILEGROUP FG_2023;
-ALTER DATABASE SalesDB ADD FILEGROUP FG_2024;
-ALTER DATABASE SalesDB ADD FILEGROUP FG_2025;
-ALTER DATABASE SalesDB ADD FILEGROUP FG_2026;
+ALTER DATABASE SchoolDB ADD FILEGROUP FG_2023;
+ALTER DATABASE SchoolDB ADD FILEGROUP FG_2024;
+ALTER DATABASE SchoolDB ADD FILEGROUP FG_2025;
+ALTER DATABASE SchoolDB ADD FILEGROUP FG_2026;
 
 -- Optional: Remove a Filegroup if needed
-ALTER DATABASE SalesDB REMOVE FILEGROUP FG_2023;
+ALTER DATABASE SchoolDB REMOVE FILEGROUP FG_2023;
 
 -- Query: List All Existing Filegroups (filter by name pattern if needed)
 SELECT *
@@ -58,28 +59,28 @@ WHERE type = 'FG'
 ============================================================================== */
 
 -- Create Files and map them to Filegroups
-ALTER DATABASE SalesDB ADD FILE
+ALTER DATABASE SchoolDB ADD FILE
 (
 	NAME = P_2023, -- Logical Name
-	FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\P_2023.ndf'
+	FILENAME = 'D:\MSSQL\PROD\P_2023.ndf'
 ) TO FILEGROUP FG_2023;
 
-ALTER DATABASE SalesDB ADD FILE
+ALTER DATABASE SchoolDB ADD FILE
 (
 	NAME = P_2024, -- Logical Name
-	FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\P_2024.ndf'
+	FILENAME = 'D:\MSSQL\PROD\P_2024.ndf'
 ) TO FILEGROUP FG_2024;
 
-ALTER DATABASE SalesDB ADD FILE
+ALTER DATABASE SchoolDB ADD FILE
 (
 	NAME = P_2025, -- Logical Name
-	FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\P_2025.ndf'
+	FILENAME = 'D:\MSSQL\PROD\P_2025.ndf'
 ) TO FILEGROUP FG_2025;
 
-ALTER DATABASE SalesDB ADD FILE
+ALTER DATABASE SchoolDB ADD FILE
 (
 	NAME = P_2026, -- Logical Name
-	FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\P_2026.ndf'
+	FILENAME = 'D:\MSSQL\PROD\P_2026.ndf'
 ) TO FILEGROUP FG_2026;
 
 -- Query: List All Existing Files in SalesDB
@@ -93,7 +94,7 @@ FROM
 JOIN 
     sys.master_files mf ON fg.data_space_id = mf.data_space_id
 WHERE 
-    mf.database_id = DB_ID('SalesDB')
+    mf.database_id = DB_ID('SchoolDB')
 
 /* ==============================================================================
    Step 4: Create Partition Scheme
