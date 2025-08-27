@@ -76,8 +76,6 @@ SELECT FirstName, AccountBalance from [dbo].[AccountHolder]
 
 
 
---ENDED HERE JUNE 9th 2025
-
 /*SELECT distinct: The SELECT DISTINCT statement is used to return only distinct (different) values
 -a column or some columns or even some entire records often contain many duplicate values; and sometimes you only want to list the different (distinct) values*/
 SELECT distinct FirstName, LastName, Country from [dbo].[AccountHolder]
@@ -379,14 +377,6 @@ If WHERE clause is used with CROSS JOIN, it functions like an INNER JOIN.
 
 
 --------------------LAB WORK (PRACTICALS)-------------------------------
-
-
-
-
-
-
-
-
 
 
 CREATE DATABASE AmazonGlobalDB
