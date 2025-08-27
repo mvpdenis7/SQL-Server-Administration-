@@ -210,6 +210,592 @@ SELECT TOP 3 * FROM AccountHolder
 -- SElect in percentage  -- you can also add WHERE clauses into it.
 SELECT TOP 50 PERCENT * FROM AccountHolder;
 
+-------=======DML COMMANDS=====================================
+--Creating Database
+USE master
+CREATE DATABASE SQLCommands
+
+Create Database SQLCommands_Demo
+
+Use SQLCommands
+
+--CREATE TABLE
+CREATE TABLE [Customer] (
+  [CustomerID] nvarchar(2) not null,
+  [FirstName] nvarchar(20),
+  [LastName] nvarchar(20),
+  [Street] nvarchar(30),
+  [City] nvarchar(20),
+  [Zip] int unique,
+  [Phone] int unique,
+  [Country] nvarchar (30),
+  PRIMARY KEY ([CustomerID]))
+
+
+use SQLCommands
+CREATE TABLE [NewOrders] (
+  [OrderNumber] nvarchar(3) not null,
+  [CustomerID] nvarchar(2) not null,
+  [OrderState] nvarchar(20),
+  [OrderDate] date
+  );
+
+
+CREATE TABLE [Product] (
+  [ProductID] int not null,
+  [OrderNumber] nvarchar(3) not null,
+  [Quantity] int,
+  [ProductType] nvarchar(30),
+  );
+
+-- INSERT VALUES INTO TABLE
+use SQLCommands
+INSERT INTO dbo.Customer
+VALUES ('B1',
+
+INSERT INTO [dbo].[Customer]
+VALUES --('A1', 'Peter', 'Schmitt', 'BM Makepe', 'Douala', '007', '7777777','CMR'),
+	   ('A2', 'Petra', 'Williams', 'Bekoko', 'Texas', '003', '3333333','USA'),
+	   ('A3', 'Chelsie', 'Moore', 'Tankwa', 'Califinia', '004', '4444444','USA'),
+	   ('A4', 'Davila', 'Yachin', 'Lendi','Colorado', '005', '5555555','USA'),
+	   ('A5', 'Glenn', 'Peters', 'Akwa', 'Washington', '002', '2222222','USA');
+
+insert into dbo.Customer
+values
+('C1', 'Denis', 'Kiawi', 'Richmond', 'Texas', 77407, 6546542,'USA');
+
+select * from  [dbo].[Customer]
+
+
+
+INSERT INTO [dbo].[Customer]
+VALUES ('A6', 'John', 'Clarkson', 'Njeleng 5', 'Bafoussam', '187', '7778888','NGR'),
+	   ('A7', 'Princess', 'Lukong', 'Mile 10', 'Kumbo', '675', '3876533','CMR'),
+	   ('A8', 'Chelsa', 'Vincent', 'Bagang', 'Bafanji', '0074', '4449874','CHAD'),
+	   ('A9', 'Davila', 'Kana', 'PK 11','Bertoua', '025', '2987555','USA'),
+	   ('B1', 'Mira', 'Mambila', 'Bonaberi', 'Douala', '192', '2274122','NAMIBIA');
+
+
+INSERT INTO [dbo].[NewOrders]
+VALUES ('1AB', 'A1', 'Douala', '12/12/2019'),
+	   ('2AB', 'A2', 'Texas', '03/09/2018'),
+	   ('3AB', 'A3', 'Califinia', '02/04/2019'),
+	   ('4AB', 'A4', 'Colorado', '08/03/2020'),
+	   ('5AB', 'A5', 'Washington', '04/18/2020');
+
+select * from [dbo].[NewOrders]
+delete from [dbo].[NewOrders]
+where  CustomerID ='A1'
+
+INSERT INTO [dbo].[NewOrders]
+VALUES ('2AC', 'A6', 'Douala', '1/12/2018'),
+	   ('3AC', 'A7', 'Texas', '03/19/2019'),
+	   ('4AC', 'A8', 'Califinia', '02/04/2017'),
+	   ('5AC', 'A9', 'Colorado', '08/03/2020'),
+	   ('6AC', 'B1', 'Washington', '04/18/2012');
+
+drop table Product
+INSERT INTO [dbo].[Product]
+VALUES ('1001', '1AB', '19', 'laptop'),
+	   ('1002', '2AB', '12', 'Jeans'),
+	   ('1003', '3AB', '1', 'Printer'),
+	   ('1004', '4AB', '9', 'Shoes'),
+	   ('1005', '5AB', '13', 'Bags');
+	  
+
+INSERT INTO [dbo].[Product]
+VALUES ('1011', '2AC', '1', 'laptop'),
+	   ('1012', '3AC', '1', 'Car'),
+	   ('1013', '4AC', '17', 'Mouse'),
+	   ('1014', '5AC', '69', 'Face Masks'),
+	   ('1015', '6AC', '73', 'Sanitizers');
+
+
+select * from Customer
+select * from [NewOrders]
+select * from product
+
+
+
+
+
+
+---DDL Commands
+ --1. Create --already seen
+
+ --2. Drop -  delete a whole database or just a table.The DROP statement destroys the objects like an existing database, table, index, or view.
+
+Drop table Customer
+--difference between delete and truncate
+select * from Customer
+delete from customer
+where customerid ='B1'
+
+truncate table Customer
+delete from customer
+
+
+--what is the difference between truncate and drop?
+--truncate deletes the data leaving the table definition while drop removes everything
+
+
+ --3. Alter: alters/changes or modifies the values in a dataset.
+ 
+ ALTER DATABASE SQLCommands_Demo
+SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+-- Alter to Rename database
+ALTER DATABASE SQLCommands_Demo MODIFY NAME = SQLCommands;
+
+-- Optional: set back to MULTI_USER
+ALTER DATABASE SQLCommands
+SET MULTI_USER;
+
+
+ -- DROP command to remove a database
+ Drop Database SQLCommands
+
+
+--BREAK
+
+
+
+
+ --Alter_Command to remove a column
+ALTER TABLE Customer
+DROP COLUMN Firstname;
+
+select * from customer
+
+drop table customer
+
+-- Alter_Command to ADD a coloum and update 
+ALTER TABLE Product
+ADD Price DECIMAL(10, 2); 
+
+ALTER TABLE Product
+drop column price
+
+select * from Product
+
+-- Rename column name
+ ALTER TABLE Product
+Rename COLUMN Price TO Amount;--Rename works only with postgre
+
+
+
+use AdventureWorks2019
+select * from [Production].[Product]
+
+exec sp_rename 'Production.Product.PoductID', 'ID', 'COLUMN';
+
+
+--use sp_rename to change column names. Syntax= 'TableName.Oldcolumn', 'NewColumn', 'COLUMN';
+EXEC sp_rename 'Customer.LastName', 'FamilyName', 'COLUMN'; --Let`s rename the "Lastname" column to "FamilyName"
+
+EXEC sp_rename 'product.Amount', 'Price', 'COLUMN';
+
+
+
+EXEC sp_rename 'Customer.zip', 'zipcode', 'COLUMN'; --Let`s rename the "zip" column to "zipcode"
+
+use SQLCommand
+select * from customers
+
+-- Rename Table name
+
+EXEC sp_rename 'Customer', 'Customers';
+
+
+-- Check dependencies
+SELECT OBJECT_NAME(referencing_id) AS referencing_object,
+       referenced_entity_name AS referenced_column
+FROM sys.sql_expression_dependencies
+WHERE referenced_entity_name = 'Proc';  -- or 'OldTableName'
+
+
+
+
+ --4. Truncate: Removes all data from a table, typically bypassing a number of integrity enforcing mechanisms. 
+BEGIN TRANSACTION
+TRUNCATE TABLE Product
+
+--VALIDATE ACTION
+COMMIT
+COMMIT TRAN
+COMMIT TRANSACTION
+
+--UNDO THE ACTION
+ROLLBACK
+ROLLBACK TRAN
+ROLLBACK TRANSACTION
+
+Rollback;
+
+
+SELECT * FROM Product
+
+Begin Transaction
+ DELETE FROM Product
+ --WHERE ProductID ='1012'
+ COMMIT TRAN
+
+ Rollback;
+ --4. Comments - /*multi line comment another comment inside a script*/
+
+
+SELECT * FROM Product;
+
+
+----DML: controls access to data and to the database
+
+--1.1 Insert into an existing Table: Already seen above. But let´s add 1 more value to the table (new customer)
+
+INSERT INTO [dbo].[Customers]
+VALUES ('C1', 'Mike', 'Kuwan', 'Ghanastreet', 'Bamenda', '237', '0237778','USA');
+select * from customers
+
+--1.2: Insert Records from an existing table into a new table
+
+--Create a new table
+CREATE TABLE [ProductNew] (
+  [ProductID] int not null,
+  [OrderNumber] nvarchar(3) not null,
+  [Quantity] int,
+  [ProductType] nvarchar(30),
+  --[Price] Decimal (10,2), --*N.B: The existing table was updated with a new coloum "Price"
+  );
+
+  select * from Product
+  select * from ProductNew
+  --drop table ProductNew
+
+
+--Insert records into the newly created table
+INSERT INTO ProductNew (ProductID, OrderNumber, Quantity, ProductType)
+SELECT ProductID, OrderNumber, Quantity, ProductType
+FROM Product;
+
+Select * from ProductNew
+truncate table productnew
+
+select * from Product
+
+Delete from ProductNew
+
+--Or insert only specific rows into the new table
+begin tran
+INSERT INTO Product (ProductID, OrderNumber, Quantity, ProductType)
+SELECT ProductID, OrderNumber, Quantity, ProductType
+FROM ProductNew
+WHERE ProductType = 'Laptop';
+
+rollback tran
+commit tran
+
+
+
+--ENDED HERE 6/16/2025
+
+--2. Update:
+Begin Tran
+UPDATE Customer SET Firstname = 'Paul' 
+
+Rollback
+--Update specific row with where clause
+Begin Tran
+UPDATE Customer SET Firstname = 'Paul'  WHERE CustomerID = 'A1';
+
+Rollback
+
+SELECT * FROM Customer;
+
+--Update with "Case"
+Begin Tran
+UPDATE Product SET Price = CASE
+    WHEN ProductID = 1001 THEN 750.00
+    WHEN ProductID = 1002 THEN 45.00
+    WHEN ProductID = 1003 THEN 120.00
+    WHEN ProductID = 1004 THEN 60.00
+    WHEN ProductID = 1005 THEN 25.00
+    WHEN ProductID = 1011 THEN 800.00
+    WHEN ProductID = 1012 THEN 15000.00
+    WHEN ProductID = 1013 THEN 20.00
+    WHEN ProductID = 1014 THEN 10.00
+    WHEN ProductID = 1015 THEN 5.00
+END;
+
+Select * from Product
+
+--3. --Delete All Records from the table
+	--It is possible to delete all rows in a table without deleting the table. This means that the table structure, attributes, and indexes will be intact:
+
+--syntax of specific record
+Begin Tran
+ DELETE FROM Customer
+ WHERE CustomerID = 'B1'
+ Rollback;
+
+
+	
+--syntax of all records
+Begin Tran
+	DELETE FROM Customer
+	rollback;
+or
+
+Begin Tran
+	Delete customer
+	Rollback
+
+
+--Merge Statement (It merges records from 2 or more coloums into 1 single coloum)
+Select FirstName + '' + LastName as FULLNAME from Customer --You can use / or -- inside the string to separate both information
+Select OrderNumber + '-' + Producttype as Productvalue from Product 
+--SQL Locks
+/*A lock is established in SQL Server when a transaction starts, and it is released when it is ended. There are different types of locks, namely:
+
+Shared (S) Locks: When the object needs to be read, this type of lock will occur, but this is not harmful.
+Exclusive (X) Locks: It prevents other transactions like inserting/updating/deleting etc., Hence no modifications can be done on a locked object.
+Update (U) Locks: More or less similar to Exclusive lock but here the operation can be viewed as  read phase  and  write phase . Especially during the read phase, other transactions are prevented. 
+Intent Locks: When SQL Server has the shared (S) lock or exclusive (X) lock on a row, then the intent lock is on the table.
+Regular intent locks: Intent exclusive (IX) , Intent shared (IS), and Intent update (IU).
+Conversion locks: Shared with intent exclusive (SIX), Shared with intent update (SIU), and Update with intent exclusive (UIX).*/
+
+--------*****TCL*****------------
+--Commit 
+--used to control transactions but canot be used with creating tables
+--ONLY USED with DML COMMANDS such as   INSERT, UPDATE and DELETE. 
+
+BEGIN TRANSACTION transaction_name ; --indicates the start point of an explicit or local transaction
+
+SET TRANSACTION [READ WRITE | READ ONLY];
+
+commit  --The COMMIT command saves all the transactions to the database since the last COMMIT or ROLLBACK command.
+
+DELETE FROM Customer WHERE city = 'Kumba';
+COMMIT;
+	
+---RollBack --If any error occurs with any of the SQL grouped statements, all changes need to be aborted. i.e Process of reversing changes
+DELETE FROM Customer WHERE city = 'Kumba';
+ROLLBACK;
+
+---Savepoint --creates points within the groups of transactions in which to ROLLBACK
+SAVEPOINT SAVEPOINT_NAME;
+
+SAVEPOINT SP1;  --Savepoint created.
+DELETE FROM Customer WHERE city = 'Kumba';  --deleted
+SAVEPOINT SP2;  --Savepoint created.
+
+ROLLBACK TO SP1;  --Rollback completed.
+
+----------------DQL-------------------------
+
+--SELECT Statements
+
+Select * from Customer -- Avoid this statement in large tables. Always use it with a where-clause
+
+SELECT FirstName, LastName FROM Customer; --selecting specific columns (Best Practice)
+
+
+
+--Other select statements
+SELECT GETDATE() AS CurrentDateTime; --Getting the Current Date and Time
+SELECT CAST(GETDATE() AS DATE) AS StartOfDay;--to get the start of the current date
+SELECT SYSDATETIME() AS CurrentDateTimeWithPrecision; --Getting the Current Date and Time with higher precision
+
+SELECT DATEPART(YEAR, GETDATE()) AS Year, 
+       DATEPART(MONTH, GETDATE()) AS Month, 
+       DATEPART(DAY, GETDATE()) AS Day; --extracting parts of a Date in year, month and day
+
+SELECT DATENAME(WEEKDAY, GETDATE()) AS DayName, 
+       DATENAME(MONTH, GETDATE()) AS MonthName;--extracting only the name of the week day and name of the month
+
+SELECT DATEADD(DAY, 7, GETDATE()) AS DateAfter7Days,
+       DATEADD(MONTH, 1, GETDATE()) AS DateNextMonth; --this script adds days, months and years
+
+SELECT DATEADD(DAY, -7, GETDATE()) AS Date7DaysAgo; --this script subtracts days, months or years
+
+
+SELECT DATEDIFF(DAY, '2025-01-01', GETDATE()) AS DaysDifference,
+       DATEDIFF(YEAR, '2020-01-01', GETDATE()) AS YearsDifference; --this script calculates the difference between dates
+
+SELECT FORMAT(GETDATE(), 'yyyy-MM-dd') AS FormattedDate,
+       FORMAT(GETDATE(), 'MMMM dd, yyyy') AS LongDateFormat; --this script helps to format dates as a string datatype
+
+SELECT CONVERT(TIME, GETDATE()) AS CurrentTime; --this script extracts only the time portion from the date
+
+SELECT DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0) AS StartOfMonth; --to get the start of this month
+SELECT DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) + 1, 0)) AS EndOfMonth; --to get the end of this month
+
+SELECT CASE WHEN (YEAR(GETDATE()) % 4 = 0 AND YEAR(GETDATE()) % 100 != 0) OR (YEAR(GETDATE()) % 400 = 0)
+            THEN 'Leap Year'
+            ELSE 'Not a Leap Year'
+       END AS LeapYearCheck; --to check if this year is a leap year or not
+
+SELECT DAY(EOMONTH(GETDATE())) AS DaysInMonth; --Get the number of days in the month
+
+
+--Create a new table with same structure but without data from an existing table:
+SELECT * INTO NewCustomer
+FROM Customer
+WHERE 1 = 0; -- This condition ensures no rows are copied.
+
+--Create a new table with same structure and data from an existing table:
+SELECT * INTO NewCustomer2
+FROM Customer
+WHERE 1 = 1; -- This condition ensures no rows are copied.
+
+
+--or
+
+--Create a new table with same structure and data from an existing table:
+SELECT *
+INTO NewCustomer3
+FROM Customer;
+
+
+
+
+
+
+
+
+----------------DCL-------------------------
+
+--GRANT: Either Gives permissions to users using Principle of Least Privilege or RBAC-Role-based Access Control
+
+GRANT SELECT ON Employees TO User1;
+
+GRANT Delete ON Customer TO John;
+
+-- REVOKE: Removes permissions from users.
+REVOKE SELECT ON Employees FROM User1;
+
+Revoke Delete ON Customer TO John;
+
+--Demo to create Login (Logins are created on the Instance Security)
+Use Master
+CREATE LOGIN lewis
+WITH PASSWORD = 'Password1';
+
+
+-- Users are created on the Database Security
+USE [AuditDB];
+
+-- Create User for Login
+CREATE USER Lewis
+FOR LOGIN Lewis;
+
+-- Grant Database Roles to User
+ALTER ROLE db_datareader ADD MEMBER Lewis;
+ALTER ROLE db_datawriter ADD MEMBER Lewis;
+
+-- Grant Explicit Permissions (Database Permissions)
+Revoke SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO Lewis;
+
+
+-----SQL Operators
+
+--top percentage
+SELECT TOP 3 * FROM Customer;
+SELECT TOP 50 PERCENT * FROM Customer;
+SELECT TOP 3 * FROM Customer WHERE City = 'Douala';  
+
+/*The SQL AND, OR and NOT Operators
+The WHERE clause can be combined with AND, OR, and NOT operators.
+The AND and OR operators are used to filter records based on more than one condition:
+The AND operator displays a record if all the conditions separated by AND are TRUE.
+The OR operator displays a record if any of the conditions separated by OR is TRUE.
+The NOT operator displays a record if the condition(s) is NOT TRUE.*/
+SELECT * FROM Customer WHERE City ='Douala' AND Street ='Bonaberi';
+SELECT * FROM Customer WHERE City='Douala' or City ='Bamenda';
+select * from Product where Quantity = 1 -- which Quantity of products are going out of stock
+Select * from Product WHERE Price < '100'; --Products starting with "a", "b", or "c"
+Select * from Product
+
+
+/*The SQL ORDER BY Keyword
+The ORDER BY keyword is used to sort the result-set in ascending or descending order.
+The ORDER BY keyword sorts the records in ascending order by default. To sort the records in descending order, use the DESC keyword.*/
+
+SELECT * FROM Customer ORDER BY City ASC -- sorting results either in asc or desc order
+
+SELECT * FROM Customer ORDER BY Firstname DESC;
+
+/*The SQL MIN() and MAX() Functions
+The MIN() function returns the smallest value of the selected column.
+The MAX() function returns the largest value of the selected column.*/
+
+SELECT MIN(Quantity) AS SmallestQuantity FROM Product;
+SELECT MAX(Quantity) AS LargestQuantity FROM Product;
+select * from Product 
+
+/*The SQL COUNT(), AVG() and SUM() Functions
+The COUNT() function returns the number of rows that matches a specified criterion.
+The AVG() function returns the average value of a numeric column. 
+The SUM() function returns the total sum of a numeric column.*/
+
+SELECT COUNT(ProductID) FROM Product;   --null values are not counted
+SELECT AVG(Quantity) FROM Product;		--null values are ignored
+SELECT AVG(Price) FROM Product;		--null values are ignored
+SELECT SUM(Quantity) FROM Product;  --null values are ignored
+SELECT SUM(Price) FROM Product;  --null values are ignored
+
+/*The SQL LIKE  and wild cards
+The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
+There are two wildcards often used in conjunction with the LIKE operator:
+ The percent sign (%) represents zero, one, or multiple characters
+ The underscore sign (_) represents one, single character
+ 
+ LIKE Operator	Description
+WHERE CustomerName LIKE 'a%'	=Finds any values that start with "a"
+WHERE CustomerName LIKE '%a'	=Finds any values that end with "a"
+WHERE CustomerName LIKE '%or%'	=Finds any values that have "or" in any position
+WHERE CustomerName LIKE '_r%'	=Finds any values that have "r" in the second position
+WHERE CustomerName LIKE 'a_%'	=Finds any values that start with "a" and are at least 2 characters in length
+WHERE CustomerName LIKE 'a__%'	=Finds any values that start with "a" and are at least 3 characters in length
+WHERE ContactName LIKE 'a%o'	=Finds any values that start with "a" and ends with "o" */
+
+SELECT * FROM Customer WHERE FirstName LIKE 'p%'; --Firstname starting with "p":
+SELECT * FROM Customer WHERE FirstName LIKE '%a';  --Firstname ending with "a":
+SELECT * FROM Customer WHERE Lastname LIKE '%or%'; --Lastname that have "or" in any position
+SELECT * FROM Customer WHERE City LIKE '_e%'; --City that have "r" in the second position
+SELECT * FROM Customer WHERE City LIKE '[a-c]%'; --City starting with "a", "b", or "c"
+SELECT * FROM Customer WHERE City LIKE '[bsp]%'; --City starting with "b", "s", or "p":
+SELECT * FROM Customer WHERE City NOT LIKE '[bsp]%'; --City not starting with "b", "s", or "p":
+Select * from Product WHERE Producttype LIKE '[a-c]%'; --Products starting with "a", "b", or "c"
+
+
+/*The SQL IN Operator
+The IN operator allows you to specify multiple values in a WHERE clause.
+The IN operator is a shorthand for multiple OR conditions.*/
+SELECT * FROM Customer WHERE City IN ('Douala', 'Bamenda', 'Texas');
+SELECT * FROM Customer WHERE zip NOT IN ('7', '187', '675', '74', '25', '192', '237', '337');
+
+/*The SQL BETWEEN Operator
+The BETWEEN operator selects values within a given range. The values can be numbers, text, or dates.
+The BETWEEN operator is inclusive: begin and end values are included. */
+SELECT * FROM Product WHERE Quantity NOT BETWEEN 10 AND 20;
+
+
+/*SQL Aliases
+SQL aliases are used to give a table, or a column in a table, a temporary name.
+Aliases are often used to make column names more readable in join statements.
+An alias only exists for the duration of that query.
+An alias is created with the AS keyword.*/
+SELECT CustomerID AS ID, CustomerName AS Customer FROM Customers;
+SELECT CustomerName AS Customer, ContactName AS [Contact Person] FROM Customers;
+SELECT CustomerName, Address + ', ' + PostalCode + ' ' + City + ', ' + Country AS Address
+FROM Customers;
+
+--Using variables
+DECLARE @StartDate DATE = '2025-01-01';
+DECLARE @EndDate DATE = GETDATE();
+
+SELECT @StartDate AS StartDate, 
+       @EndDate AS EndDate, 
+       DATEDIFF(DAY, @StartDate, @EndDate) AS DaysDifference;
 
 
 
