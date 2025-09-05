@@ -1,6 +1,9 @@
                                                                 --SQL Server Security--
 					 
-	 --IMPLEMENTATION OF TDE---
+				 
+					 
+					 
+					 --IMPLEMENTATION OF TDE---
 
 /*Transparent Data Encryption (TDE) is a special case of encryption using a symmetric key. TDE encrypts entire database using a symmetric key called the database encryption key – DEK.
  
@@ -20,17 +23,17 @@ Create Database EncryptDB
 
 --Back up database
 Backup Database EncryptDB 
-To Disk = N'C:\Program Files\Microsoft SQL Server\MSSQL15.PROD\MSSQL\Backup\EncryptDB2_29Aug25.Bak'
+To Disk = N'N:\MSSQL\TDE\EncryptDB_04Sept25.Bak'
 
 --Create Master key
 USE Master
 
 CREATE MASTER KEY ENCRYPTION
-BY PASSWORD='InsertStrongPasswordHere'
+BY PASSWORD='Password1'
 
  
  --Create Certificate protected by master key
-CREATE CERTIFICATE TDE_Cert
+CREATE CERTIFICATE TDE_Cert_Server1
 WITH 
 SUBJECT='Database_Encryption'
 
@@ -40,15 +43,14 @@ USE EncryptDB
 
 CREATE DATABASE ENCRYPTION KEY
 WITH ALGORITHM = AES_256
-ENCRYPTION BY SERVER CERTIFICATE TDE_Cert
+ENCRYPTION BY SERVER CERTIFICATE TDE_Cert_Server1
 
 --Backup Certificate
 Use Master 
-
-BACKUP CERTIFICATE TDE_Cert
-TO FILE = 'C:\Program Files\Microsoft SQL Server\MSSQL15.PROD\MSSQL\Backup\TDE_Cert.cer'
-WITH PRIVATE KEY (file='C:\Program Files\Microsoft SQL Server\MSSQL15.PROD\MSSQL\Backup\BackupTDE_CertKey.pvk',
-ENCRYPTION BY PASSWORD='InsertStrongPasswordHere') 
+BACKUP CERTIFICATE TDE_Cert_Server1
+TO FILE = '\\DC\DBADocs\Files\TDE_Certs\TDE_Cert_Server1.cer'
+WITH PRIVATE KEY (file='\\DC\DBADocs\Files\TDE_Certs\TDE_Cert_Server1.pvk',
+ENCRYPTION BY PASSWORD='Password1') 
 
 --Enable Encryption
 ALTER DATABASE EncryptDB
@@ -59,10 +61,11 @@ Select name, database_id, is_encrypted
 From sys.databases
 
 Backup Database EncryptDB 
-To Disk = N'C:\Program Files\Microsoft SQL Server\MSSQL15.PROD\MSSQL\Backup\EncryptDB3_29Aug25.Bak'
+To Disk = N'N:\MSSQL\TDE\EncryptDB_with_EncryptionON_.04Sept25.Bak'
 
 -- Restore ecrypted backup in another instance using the GIU
 --Notice it won't restor, it will only be possible after restoring the certificate to that instance
+
 
 --Restoring a certificate
 USE Master
