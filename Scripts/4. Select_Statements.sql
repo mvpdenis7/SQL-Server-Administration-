@@ -115,17 +115,6 @@ WHERE Country = 'SOUTH AFRICA' OR Country = 'TANZANIA';
   Order by FirstName ASC
 
 
-  --The MIN() or MAX() function returns the smallest or largest value of the Selected column respectively.
-
--- SELECT Min  
-SELECT MIN(AccountBalance) 
-FROM [dbo].[AccountHolder]
-
--- SELECT Max  
-SELECT MAX(AccountBalance) 
-FROM [dbo].[AccountHolder]
-
-
 
 /**The SQL LIKE Operator
 The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
@@ -148,17 +137,91 @@ WHERE FirstName LIKE 'a__%'	Finds any values that start with "a" and are at leas
 WHERE FirstName LIKE 'a%o'	Finds any values that start with "a" and ends with "o"*/
 
 -- example
-SELECT * FROM [dbo].[AccountHolder]
-WHERE FirstName LIKE 'a%';
+SELECT * FROM Customer WHERE FirstName LIKE 'p%'; --Firstname starting with "p":
+SELECT * FROM Customer WHERE FirstName LIKE '%a';  --Firstname ending with "a":
+SELECT * FROM Customer WHERE Lastname LIKE '%or%'; --Lastname that have "or" in any position
+SELECT * FROM Customer WHERE City LIKE '_e%'; --City that have "r" in the second position
+SELECT * FROM Customer WHERE City LIKE '[a-c]%'; --City starting with "a", "b", or "c"
+SELECT * FROM Customer WHERE City LIKE '[bsp]%'; --City starting with "b", "s", or "p":
+SELECT * FROM Customer WHERE City NOT LIKE '[bsp]%'; --City not starting with "b", "s", or "p":
+Select * from Product WHERE Producttype LIKE '[a-c]%'; --Products starting with "a", "b", or "c"
 
-SELECT * FROM [dbo].[AccountHolder]
-WHERE LastName LIKE '%gu%';
+SELECT * FROM [dbo].[AccountHolder] WHERE FirstName LIKE 'a%';
 
-SELECT * FROM [dbo].[AccountHolder]
-WHERE LastName LIKE 'n%h';
+SELECT * FROM [dbo].[AccountHolder] WHERE LastName LIKE '%gu%';
 
-SELECT * FROM [dbo].[AccountHolder]
-WHERE LastName LIKE 'l____%';
+SELECT * FROM [dbo].[AccountHolder] WHERE LastName LIKE 'n%h';
+
+SELECT * FROM [dbo].[AccountHolder] WHERE LastName LIKE 'l____%';
+
+
+
+-----SQL Operators
+
+--top percentage
+SELECT TOP 3 * FROM Customer;
+SELECT TOP 50 PERCENT * FROM Customer;
+SELECT TOP 3 * FROM Customer WHERE City = 'Douala';  
+
+/*The SQL AND, OR and NOT Operators
+The WHERE clause can be combined with AND, OR, and NOT operators.
+The AND and OR operators are used to filter records based on more than one condition:
+The AND operator displays a record if all the conditions separated by AND are TRUE.
+The OR operator displays a record if any of the conditions separated by OR is TRUE.
+The NOT operator displays a record if the condition(s) is NOT TRUE.*/
+SELECT * FROM Customer WHERE City ='Douala' AND Street ='Bonaberi';
+SELECT * FROM Customer WHERE City='Douala' or City ='Bamenda';
+select * from Product where Quantity = 1 -- which Quantity of products are going out of stock
+Select * from Product WHERE Price < '100'; --Products starting with "a", "b", or "c"
+Select * from Product
+
+
+/*The SQL MIN() and MAX() Functions
+The MIN() function returns the smallest value of the selected column.
+The MAX() function returns the largest value of the selected column.*/
+
+SELECT MIN(Quantity) AS SmallestQuantity FROM Product;
+SELECT MAX(Quantity) AS LargestQuantity FROM Product;
+-- SELECT Min  
+SELECT MIN(AccountBalance)  FROM [dbo].[AccountHolder]
+-- SELECT Max  
+SELECT MAX(AccountBalance)  FROM [dbo].[AccountHolder]
+select * from Product 
+ --The MIN() or MAX() function returns the smallest or largest value of the Selected column respectively.
+
+
+/*The SQL COUNT(), AVG() and SUM() Functions
+The COUNT() function returns the number of rows that matches a specified criterion.
+The AVG() function returns the average value of a numeric column. 
+The SUM() function returns the total sum of a numeric column.*/
+
+SELECT COUNT(ProductID) FROM Product;   --null values are not counted
+SELECT AVG(Quantity) FROM Product;		--null values are ignored
+SELECT AVG(Price) FROM Product;		--null values are ignored
+SELECT SUM(Quantity) FROM Product;  --null values are ignored
+SELECT SUM(Price) FROM Product;  --null values are ignored
+
+
+
+
+/*SQL Aliases
+SQL aliases are used to give a table, or a column in a table, a temporary name.
+Aliases are often used to make column names more readable in join statements.
+An alias only exists for the duration of that query.
+An alias is created with the AS keyword.*/
+SELECT CustomerID AS ID, CustomerName AS Customer FROM Customers;
+SELECT CustomerName AS Customer, ContactName AS [Contact Person] FROM Customers;
+SELECT CustomerName, Address + ', ' + PostalCode + ' ' + City + ', ' + Country AS Address
+FROM Customers;
+
+--Using variables
+DECLARE @StartDate DATE = '2025-01-01';
+DECLARE @EndDate DATE = GETDATE();
+
+SELECT @StartDate AS StartDate, 
+       @EndDate AS EndDate, 
+       DATEDIFF(DAY, @StartDate, @EndDate) AS DaysDifference;
+
 
 
 /* The SQL IN Operator
@@ -209,6 +272,7 @@ SELECT TOP 3 * FROM AccountHolder
 
 -- SElect in percentage  -- you can also add WHERE clauses into it.
 SELECT TOP 50 PERCENT * FROM AccountHolder;
+
 
 -------=======DML COMMANDS=====================================
 --Creating Database
@@ -296,19 +360,19 @@ VALUES ('2AC', 'A6', 'Douala', '1/12/2018'),
 
 drop table Product
 INSERT INTO [dbo].[Product]
-VALUES ('1001', '1AB', '19', 'laptop'),
-	   ('1002', '2AB', '12', 'Jeans'),
-	   ('1003', '3AB', '1', 'Printer'),
-	   ('1004', '4AB', '9', 'Shoes'),
-	   ('1005', '5AB', '13', 'Bags');
+VALUES ('1001', '1AB', '19', 'laptop',1003),
+	   ('1002', '2AB', '12', 'Jeans',1004),
+	   ('1003', '3AB', '1', 'Printer',1403),
+	   ('1004', '4AB', '9', 'Shoes',1503),
+	   ('1005', '5AB', '13', 'Bags',10653);
 	  
 
 INSERT INTO [dbo].[Product]
-VALUES ('1011', '2AC', '1', 'laptop'),
-	   ('1012', '3AC', '1', 'Car'),
-	   ('1013', '4AC', '17', 'Mouse'),
-	   ('1014', '5AC', '69', 'Face Masks'),
-	   ('1015', '6AC', '73', 'Sanitizers');
+VALUES ('1011', '2AC', '1', 'laptop',4003),
+	   ('1012', '3AC', '1', 'Car',1303),
+	   ('1013', '4AC', '17', 'Mouse',1033),
+	   ('1014', '5AC', '69', 'Face Masks',1503),
+	   ('1015', '6AC', '73', 'Sanitizers',5003);
 
 
 select * from Customer
@@ -354,11 +418,6 @@ SET MULTI_USER;
 
  -- DROP command to remove a database
  Drop Database SQLCommands
-
-
---BREAK
-
-
 
 
  --Alter_Command to remove a column
@@ -495,13 +554,36 @@ commit tran
 
 
 
---ENDED HERE 6/16/2025
 
 --2. Update:
+select * from [dbo].[Customer]
+use sqlcommands
 Begin Tran
-UPDATE Customer SET Firstname = 'Paul' 
+UPDATE Customer SET lastname = 'Kiawi' 
+where customerid ='E1'
 
-Rollback
+
+begin tran
+insert into Customer 
+values 
+('E2', 'Tim','34 Corporate Drive', 'Stafford', 77479, 553545, 'USA', 'David')
+
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+ALTER DATABASE [SQLCommands] SET READ_COMMITTED_SNAPSHOT ON;
+begin tran
+insert into Customer 
+values 
+('E3', 'Tim','34 Corporate Drive', 'Stafford', 77478, 554545, 'USA', 'David')
+
+select * from [dbo].[Customer]
+
+sp_whoisactive
+sp_who2
+
+commit tran
+
+Rollback tran
+
 --Update specific row with where clause
 Begin Tran
 UPDATE Customer SET Firstname = 'Paul'  WHERE CustomerID = 'A1';
@@ -513,17 +595,18 @@ SELECT * FROM Customer;
 --Update with "Case"
 Begin Tran
 UPDATE Product SET Price = CASE
-    WHEN ProductID = 1001 THEN 750.00
+    WHEN ProductID = 1001 THEN 755.00
     WHEN ProductID = 1002 THEN 45.00
-    WHEN ProductID = 1003 THEN 120.00
+    WHEN ProductID = 1003 THEN 130.00
     WHEN ProductID = 1004 THEN 60.00
     WHEN ProductID = 1005 THEN 25.00
     WHEN ProductID = 1011 THEN 800.00
-    WHEN ProductID = 1012 THEN 15000.00
+    WHEN ProductID = 1012 THEN 16000.00
     WHEN ProductID = 1013 THEN 20.00
     WHEN ProductID = 1014 THEN 10.00
     WHEN ProductID = 1015 THEN 5.00
 END;
+commit tran
 
 Select * from Product
 
@@ -552,6 +635,8 @@ Begin Tran
 --Merge Statement (It merges records from 2 or more coloums into 1 single coloum)
 Select FirstName + '' + LastName as FULLNAME from Customer --You can use / or -- inside the string to separate both information
 Select OrderNumber + '-' + Producttype as Productvalue from Product 
+
+
 --SQL Locks
 /*A lock is established in SQL Server when a transaction starts, and it is released when it is ended. There are different types of locks, namely:
 
@@ -693,110 +778,6 @@ ALTER ROLE db_datawriter ADD MEMBER Lewis;
 
 -- Grant Explicit Permissions (Database Permissions)
 Revoke SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO Lewis;
-
-
------SQL Operators
-
---top percentage
-SELECT TOP 3 * FROM Customer;
-SELECT TOP 50 PERCENT * FROM Customer;
-SELECT TOP 3 * FROM Customer WHERE City = 'Douala';  
-
-/*The SQL AND, OR and NOT Operators
-The WHERE clause can be combined with AND, OR, and NOT operators.
-The AND and OR operators are used to filter records based on more than one condition:
-The AND operator displays a record if all the conditions separated by AND are TRUE.
-The OR operator displays a record if any of the conditions separated by OR is TRUE.
-The NOT operator displays a record if the condition(s) is NOT TRUE.*/
-SELECT * FROM Customer WHERE City ='Douala' AND Street ='Bonaberi';
-SELECT * FROM Customer WHERE City='Douala' or City ='Bamenda';
-select * from Product where Quantity = 1 -- which Quantity of products are going out of stock
-Select * from Product WHERE Price < '100'; --Products starting with "a", "b", or "c"
-Select * from Product
-
-
-/*The SQL ORDER BY Keyword
-The ORDER BY keyword is used to sort the result-set in ascending or descending order.
-The ORDER BY keyword sorts the records in ascending order by default. To sort the records in descending order, use the DESC keyword.*/
-
-SELECT * FROM Customer ORDER BY City ASC -- sorting results either in asc or desc order
-
-SELECT * FROM Customer ORDER BY Firstname DESC;
-
-/*The SQL MIN() and MAX() Functions
-The MIN() function returns the smallest value of the selected column.
-The MAX() function returns the largest value of the selected column.*/
-
-SELECT MIN(Quantity) AS SmallestQuantity FROM Product;
-SELECT MAX(Quantity) AS LargestQuantity FROM Product;
-select * from Product 
-
-/*The SQL COUNT(), AVG() and SUM() Functions
-The COUNT() function returns the number of rows that matches a specified criterion.
-The AVG() function returns the average value of a numeric column. 
-The SUM() function returns the total sum of a numeric column.*/
-
-SELECT COUNT(ProductID) FROM Product;   --null values are not counted
-SELECT AVG(Quantity) FROM Product;		--null values are ignored
-SELECT AVG(Price) FROM Product;		--null values are ignored
-SELECT SUM(Quantity) FROM Product;  --null values are ignored
-SELECT SUM(Price) FROM Product;  --null values are ignored
-
-/*The SQL LIKE  and wild cards
-The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
-There are two wildcards often used in conjunction with the LIKE operator:
- The percent sign (%) represents zero, one, or multiple characters
- The underscore sign (_) represents one, single character
- 
- LIKE Operator	Description
-WHERE CustomerName LIKE 'a%'	=Finds any values that start with "a"
-WHERE CustomerName LIKE '%a'	=Finds any values that end with "a"
-WHERE CustomerName LIKE '%or%'	=Finds any values that have "or" in any position
-WHERE CustomerName LIKE '_r%'	=Finds any values that have "r" in the second position
-WHERE CustomerName LIKE 'a_%'	=Finds any values that start with "a" and are at least 2 characters in length
-WHERE CustomerName LIKE 'a__%'	=Finds any values that start with "a" and are at least 3 characters in length
-WHERE ContactName LIKE 'a%o'	=Finds any values that start with "a" and ends with "o" */
-
-SELECT * FROM Customer WHERE FirstName LIKE 'p%'; --Firstname starting with "p":
-SELECT * FROM Customer WHERE FirstName LIKE '%a';  --Firstname ending with "a":
-SELECT * FROM Customer WHERE Lastname LIKE '%or%'; --Lastname that have "or" in any position
-SELECT * FROM Customer WHERE City LIKE '_e%'; --City that have "r" in the second position
-SELECT * FROM Customer WHERE City LIKE '[a-c]%'; --City starting with "a", "b", or "c"
-SELECT * FROM Customer WHERE City LIKE '[bsp]%'; --City starting with "b", "s", or "p":
-SELECT * FROM Customer WHERE City NOT LIKE '[bsp]%'; --City not starting with "b", "s", or "p":
-Select * from Product WHERE Producttype LIKE '[a-c]%'; --Products starting with "a", "b", or "c"
-
-
-/*The SQL IN Operator
-The IN operator allows you to specify multiple values in a WHERE clause.
-The IN operator is a shorthand for multiple OR conditions.*/
-SELECT * FROM Customer WHERE City IN ('Douala', 'Bamenda', 'Texas');
-SELECT * FROM Customer WHERE zip NOT IN ('7', '187', '675', '74', '25', '192', '237', '337');
-
-/*The SQL BETWEEN Operator
-The BETWEEN operator selects values within a given range. The values can be numbers, text, or dates.
-The BETWEEN operator is inclusive: begin and end values are included. */
-SELECT * FROM Product WHERE Quantity NOT BETWEEN 10 AND 20;
-
-
-/*SQL Aliases
-SQL aliases are used to give a table, or a column in a table, a temporary name.
-Aliases are often used to make column names more readable in join statements.
-An alias only exists for the duration of that query.
-An alias is created with the AS keyword.*/
-SELECT CustomerID AS ID, CustomerName AS Customer FROM Customers;
-SELECT CustomerName AS Customer, ContactName AS [Contact Person] FROM Customers;
-SELECT CustomerName, Address + ', ' + PostalCode + ' ' + City + ', ' + Country AS Address
-FROM Customers;
-
---Using variables
-DECLARE @StartDate DATE = '2025-01-01';
-DECLARE @EndDate DATE = GETDATE();
-
-SELECT @StartDate AS StartDate, 
-       @EndDate AS EndDate, 
-       DATEDIFF(DAY, @StartDate, @EndDate) AS DaysDifference;
-
 
 
 
