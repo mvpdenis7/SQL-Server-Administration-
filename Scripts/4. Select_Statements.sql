@@ -636,16 +636,23 @@ Begin Tran
 Select FirstName + '' + LastName as FULLNAME from Customer --You can use / or -- inside the string to separate both information
 Select OrderNumber + '-' + Producttype as Productvalue from Product 
 
+--More DEMO on Locks
 
 --SQL Locks
 /*A lock is established in SQL Server when a transaction starts, and it is released when it is ended. There are different types of locks, namely:
 
 Shared (S) Locks: When the object needs to be read, this type of lock will occur, but this is not harmful.
+
 Exclusive (X) Locks: It prevents other transactions like inserting/updating/deleting etc., Hence no modifications can be done on a locked object.
+
 Update (U) Locks: More or less similar to Exclusive lock but here the operation can be viewed as  read phase  and  write phase . Especially during the read phase, other transactions are prevented. 
+
 Intent Locks: When SQL Server has the shared (S) lock or exclusive (X) lock on a row, then the intent lock is on the table.
+
 Regular intent locks: Intent exclusive (IX) , Intent shared (IS), and Intent update (IU).
+
 Conversion locks: Shared with intent exclusive (SIX), Shared with intent update (SIU), and Update with intent exclusive (UIX).*/
+
 
 --------*****TCL*****------------
 --Commit 
@@ -665,16 +672,25 @@ COMMIT;
 DELETE FROM Customer WHERE city = 'Kumba';
 ROLLBACK;
 
----Savepoint --creates points within the groups of transactions in which to ROLLBACK
-SAVEPOINT SAVEPOINT_NAME;
 
-SAVEPOINT SP1;  --Savepoint created.
-DELETE FROM Customer WHERE city = 'Kumba';  --deleted
-SAVEPOINT SP2;  --Savepoint created.
 
-ROLLBACK TO SP1;  --Rollback completed.
+---More Research on Savepoint
+
+-----Savepoint --creates points within the groups of transactions in which to ROLLBACK
+--SAVEPOINT SAVEPOINT_NAME;
+
+--SAVE TRANSACTION SP1;--Savepoint created.
+--DELETE FROM Customer WHERE city = 'Texas';  --deleted
+--SAVEPOINT SP2;  --Savepoint created.
+
+
+--select * from Customer 
+--ROLLBACK TO SP1;  --Rollback completed.
 
 ----------------DQL-------------------------
+
+
+
 
 --SELECT Statements
 
@@ -682,7 +698,8 @@ Select * from Customer -- Avoid this statement in large tables. Always use it wi
 
 SELECT FirstName, LastName FROM Customer; --selecting specific columns (Best Practice)
 
-
+SELECT 100*10
+SELECT 1000/2
 
 --Other select statements
 SELECT GETDATE() AS CurrentDateTime; --Getting the Current Date and Time
@@ -699,11 +716,11 @@ SELECT DATENAME(WEEKDAY, GETDATE()) AS DayName,
 SELECT DATEADD(DAY, 7, GETDATE()) AS DateAfter7Days,
        DATEADD(MONTH, 1, GETDATE()) AS DateNextMonth; --this script adds days, months and years
 
-SELECT DATEADD(DAY, -7, GETDATE()) AS Date7DaysAgo; --this script subtracts days, months or years
+SELECT DATEADD(year, -42, GETDATE()) AS Date7DaysAgo; --this script subtracts days, months or years
 
 
-SELECT DATEDIFF(DAY, '2025-01-01', GETDATE()) AS DaysDifference,
-       DATEDIFF(YEAR, '2020-01-01', GETDATE()) AS YearsDifference; --this script calculates the difference between dates
+SELECT DATEDIFF(week, '1983-08-09', GETDATE()) AS DaysDifference,
+       DATEDIFF(YEAR, '1983-08-09', GETDATE()) AS YearsDifference; --this script calculates the difference between dates
 
 SELECT FORMAT(GETDATE(), 'yyyy-MM-dd') AS FormattedDate,
        FORMAT(GETDATE(), 'MMMM dd, yyyy') AS LongDateFormat; --this script helps to format dates as a string datatype
@@ -741,11 +758,6 @@ FROM Customer;
 
 
 
-
-
-
-
-
 ----------------DCL-------------------------
 
 --GRANT: Either Gives permissions to users using Principle of Least Privilege or RBAC-Role-based Access Control
@@ -780,6 +792,8 @@ ALTER ROLE db_datawriter ADD MEMBER Lewis;
 Revoke SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO Lewis;
 
 
+--ended here 
+--9/04/2025
 
 -------------/* SQL JOIN
 --A JOIN clause is used to combine rows from two or more tables, based on a related column between them.
