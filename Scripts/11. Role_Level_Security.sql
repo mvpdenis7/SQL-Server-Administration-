@@ -1,3 +1,8 @@
+  --UNDERSTANDING AND IMPLEMENTING ROW-LEVEL SECURITY--
+
+--Create a database called  Row-level security RLS
+
+
 /* Step 1.a. Let’s create some test accounts: I will create three users for:
 
 1. The CEO, over-all admin of the company data.
