@@ -45,19 +45,19 @@ GetProductDesc
 
 
 
-
-
-
-
 CREATE PROCEDURE SelectAddress
-(@denis INT =100)
+(@ugo INT =100)
 AS
 begin
 select * FROM  PERSON.ADDRESS
-WHERE AddressID=@denis
+WHERE AddressID=@ugo
 end
 
 execute SelectAddress
+
+select * from PERSON.ADDRESS
+WHERE AddressID =100
+
 
 CREATE TABLE Employee 
 (
@@ -66,7 +66,8 @@ EmpName varchar(500)
 )
 
 
-CREATE PROCEDURE ins_NewEmp_with_outputparamaters
+
+ALTER PROCEDURE ins_NewEmp_with_outputparamaters
 (@Ename varchar(50),
 @EId int output)
 AS
@@ -90,7 +91,7 @@ SELECT @EmpID
 -- Global temporary tables --> ##
 
 
---Local temporary stored procedures
+--Local temporary tables and  stored procedures
 ALTER PROCEDURE #Temp
 AS
 BEGIN
@@ -98,7 +99,19 @@ PRINT 'Local temp procedure'
 END
 exec #Temp
 
+create table #test
+(ID int)
 
+insert into #test
+values (1)
+
+create procedure #spTest
+AS
+BEGIN 
+Select * from #Test
+END
+
+exec #spTest
 -- Global temporary stored procedures
 ALTER PROCEDURE ##Temp
 AS
@@ -106,6 +119,22 @@ BEGIN
 PRINT 'Local temp procedure'
 END
 exec ##Temp
+
+create table ##test
+(ID int)
+
+insert into ##test
+values (1)
+
+select * from ##test
+
+create procedure ##spTest
+AS
+BEGIN 
+Select * from ##Test
+END
+
+exec ##spTest
 
 
 --Diference between local and global temporary tables
@@ -130,10 +159,14 @@ INSERT INTO #ProductDescription VALUES (680,'Replacement mountain wheel for entr
 ,(707,'Aerodynamic rims for smooth riding.')
 GO
 
+select * from #Product
+Select * from #ProductDescription
+
 
 CREATE TABLE #Product
 (ProductID INT, ProductName VARCHAR(100) )
 GO
+
 
 CREATE TABLE #ProductDescription
 (ProductID INT, ProductDescription VARCHAR(800) )
@@ -141,11 +174,15 @@ GO
 
 
 --Example of Global temporary tables
- 
+ CREATE TABLE ##Product
+(ProductID INT, ProductName VARCHAR(100) )
+GO
 INSERT INTO ##Product VALUES (680,'HL Road Frame - Black, 58')
 ,(706,'HL Road Frame - Red, 58')
 ,(707,'Sport-100 Helmet, Red')
 GO
+
+select * from  ##Product
  
 INSERT INTO ##ProductDescription VALUES (680,'Replacement mountain wheel for entry-level rider.')
 ,(706,'Sturdy alloy features a quick-release hub.')
@@ -157,36 +194,32 @@ select * from ##ProductDescription
 select * from ##product
 
 
-ALTER PROCEDURE HelloWorldprocedure
+CREATE PROCEDURE HelloWorldprocedure
 AS
 PRINT 'Hello World trainee from Kiawitech Academy'
 
-HelloWorldprocedure
+execute  HelloWorldprocedure
 
+-- FUNCTIONS IN SQL SERVER ----
 
 --What is a function in SQL server and how it differs from stored procedure
 select Getdate()
 select @@version 
 
 
-ALTER PROCEDURE HelloWorldprocedure
-AS
-PRINT 'Hello World trainee from Kiawitech Academy'
 
-HelloWorldprocedure
-
-
-CREATE FUNCTION dbo.helloworldfunction()
+ALTER FUNCTION dbo.helloworldfunction()
 RETURNS varchar(20)
 AS 
 BEGIN
-	 RETURN 'Hello world'
+	 RETURN 'Hello World trainee from Kiawitech Academy'
 END
 
 exec HelloWorldprocedure
 execute HelloWorldprocedure
 execute dbo.HelloWorldprocedure
 HelloWorldprocedure
+
 
 select dbo.helloworldfunction()
 
@@ -208,5 +241,3 @@ BEGIN
 END
 
 select dbo.f_celsiustofahrenheit(0) as Fahrenheit
-
-
