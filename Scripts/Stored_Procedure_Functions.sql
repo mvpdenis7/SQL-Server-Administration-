@@ -1,25 +1,30 @@
+
 CREATE PROCEDURE GetProductDesc
 AS
 BEGIN 
-SELECT P.ProductID,P.ProductName,PD.ProductDescription  FROM 
-Product P
-INNER JOIN ProductDescription PD 
-ON P.ProductID=PD.ProductID
+SELECT P.ProductID, P.[Name],PD.Description  FROM 
+[Production].[Product] P
+INNER JOIN [Production].[ProductDescription] PD 
+ON P.ProductID=PD.[ProductDescriptionID]
 END
 
+-- Two ways to call a stored procedure
+--EXEC storeproc name
+--EXECUTE storeproc name
 EXEC GetProductDesc
 
 -- create a stored procedure to run the select on person table
-CREATE PROCEDURE SelectPersonTable
+CREATE PROCEDURE uspSelectPersonTable
 AS
 BEGIN
 select * from person.person
 END
 
-EXECUTE SelectPersonTable
-EXEC SelectPersonTable
-SelectPersonTable
+EXECUTE uspSelectPersonTable
+EXEC uspSelectPersonTable
 
+
+--Understanding SP SET NOCOUNT ON /SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -29,11 +34,19 @@ AS
 BEGIN 
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
-SELECT P.ProductID,P.ProductName,PD.ProductDescription  FROM 
-Product P
-INNER JOIN ProductDescription PD 
-ON P.ProductID=PD.ProductID
+SELECT P.ProductID, P.[Name],PD.Description  FROM 
+[Production].[Product] P
+INNER JOIN [Production].[ProductDescription] PD 
+ON P.ProductID=PD.[ProductDescriptionID]
 END
+
+--Run SP without EXEC or EXECUTE 
+GetProductDesc
+
+
+
+
+
 
 
 CREATE PROCEDURE SelectAddress
