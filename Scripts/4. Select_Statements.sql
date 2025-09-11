@@ -792,12 +792,50 @@ ALTER ROLE db_datawriter ADD MEMBER Lewis;
 Revoke SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO Lewis;
 
 
---ended here 
---9/04/2025
+/* WHAT IS A JOIN?
+A JOIN is a clause used to combine rows from two or more tables based on a related column between them*//
 
--------------/* SQL JOIN
---A JOIN clause is used to combine rows from two or more tables, based on a related column between them.
---Different Types of SQL JOINs
+--QUESTION???? Can we join two tables that do not have any Primary and Foreign key relationship???? Yes as long as the column values involved in the join can be converted to a compartible datatype.
+
+//* DIFFERENT TYPES OF JOINS
+1)INNER JOIN    (MSSQL Default JOIN where type of Join is not explicitly stated)
+2)LEFT JOIN OR LEFT OUTER JOIN
+3)RIGHT JOIN OR RIGHT OUTER JOIN
+4)FULL OUTER JOIN
+5)SELF JOIN
+6)CROSS JOIN
+
+1 - INNER JOIN: Returns "ONLY" records that have matching values in both (or all) tables. Does not return "ALL" records from any of the tables except if all the records in one or both tables actually have a match in the other table. (Much like an Intersection).
+	SQL SNYTAX
+	: is INNER JOIN OR JOIN
+
+	SCENARIO WHEN YOU MIGHT NEED AN INNER JOIN: Like when you want to know customers who are actively shopping for various reasons ranging from targeted advertisement, customer reward programs etc. 
+
+2 - LEFT JOIN OR LEFT OUTER JOIN: Returns "ALL" records from the Left table and their corresponding match from the Right Table that has been joined. Since Left Join returns ALL Records from Left Table, if there is a record that does not have a corresponding match with the Right table, it will be displayed as NULL.
+    SQL SNYTAX:
+	LEFT JOIN  OR LEFT OUTER JOIN
+	SCENARIO WHEN YOU MIGHT NEED A LEFT JOIN: 
+
+3 - RIGHT JOIN OR RIGHT OUTER JOIN: Returns "ALL" records from the Right table and their corresponding match from the Left Table that has been joined. Since Right Join returns ALL Records from Right Table, if there is a record that does not have a corresponding match with the Left table, it will be displayed as NULL.
+    SQL SNYTAX: is RIGHT JOIN  OR RIGHT OUTER JOIN
+	SCENARIO WHEN YOU MIGHT NEED A RIGHT JOIN: 
+
+4 - FULL JOIN OR FULL OUTER JOIN: Returns "ALL" records from "BOTH" tables displaying their corresponding matches and their non-corresponding matches as well if there is any that does not have a corresponding match.
+    SQL SNYTAX FOR FULL JOIN: is FULL JOIN OR FULL OUTER JOIN
+	SCENARIO WHEN YOU MIGHT NEED A FULL JOIN: 
+
+5 - SELF JOIN: It is a regular join but the table is joined with itself. A SELF JOIN is a REGULAR JOIN and can be classided under any join INNER, OUTER and CROSS. Works in the same manner as a UNION Statement. The union operator is used to combine the result-set of two or more SELECT Statements. /Each SELECT Statement within the Union must have the same number of columns. /The columns must also have the similar datatypes/ The columns in each SELECT Statement must also be in the same order.
+
+6 - CROSS JOIN
+ The SQL CROSS JOIN produces a result set which is the number of rows in the first table multiplied by the number of rows in the second table if no WHERE clause is used along with CROSS JOIN. This kind of result is known as the Cartesian Product. TAKE SPECIAL NOTE THAT a Cross Join cannot have an ON clause.
+ -- What is CARTESIAN PRODUCT IN SQL? A Cartesian Product is a product of two sets of elements where each element in one set is multiplied by every other element of the other set.
+If WHERE clause is used with CROSS JOIN, it functions like an INNER JOIN.
+
+
+   ***NOTE THAT the UNION Operator SELECTs only distinct values by default. To allow duplicate values, use UNION ALL.
+
+	***N/B: THE ON STATEMENT TELLS YOU THE COMMON COLUMN ON BOTH TABLES.   *//
+
 
 
 --Here are the different types of the JOINs in SQL:
@@ -880,84 +918,214 @@ FROM Customers
 FULL OUTER JOIN Orders ON Customers.CustomerID=Orders.CustomerID
 ORDER BY Customers.CustomerName;
 
-/* SQL UNION Operator
-
-The UNION operator is used to combine the result-set of two or more SELECT statements.
-
--Every SELECT statement within UNION must have the same number of columns
--The columns must also have similar data types
--The columns in every SELECT statement must also be in the same order
-
-UNION Syntax */
-
-SELECT column_name(s) FROM table1
-UNION
-SELECT column_name(s) FROM table2;
-
-/*
-UNION ALL Syntax
-The UNION operator SELECTs only distinct values by default. To allow duplicate values, use UNION ALL:
-*/
-SELECT column_name(s) FROM table1
-UNION ALL
-SELECT column_name(s) FROM table2;
-
-Note: The column names in the result-set are usually equal to the column names in the first SELECT statement.
+/*DEMO
+Assume that a Manager for a company you are currently employed as a DBA requires some reports to present to auditors. The company’s name is called KiawiTechIT Academy and has a database called AuditDB with four tables created to capture information for Employees, Departments, Managers and Projects within the company.*/
 
 
+----Creating a database AuditDB
+
+Create database AuditDB
+
+use AuditDB;
+
+CREATE TABLE Employee
+(
+Emp_ID nvarchar(5) NOT NULL PRIMARY KEY,
+Emp_Name VARCHAR(15) Not NULL,
+Salary Int,
+SSN INT NOT NULL UNIQUE,
+Dept_ID nvarchar(5) not NULL,
+Manager_ID nvarchar(5) NOT NULL
+);
+
+
+CREATE TABLE Manager
+(
+Manager_ID nvarchar(5) not null,
+Manager_Name varchar(15),
+Dept_ID nvarchar(5) not NULL
+);
+
+
+CREATE TABLE Department
+(
+Dept_ID nvarchar(5) not null,
+Dept_Name varchar(15)
+);
+
+
+CREATE TABLE Project
+(
+Project_ID nvarchar(5) not null,
+Project_Name varchar(30),
+Project_Member_ID nvarchar(5) not NULL
+);
+
+---Inserting data into a table
+
+INSERT INTO Employee VALUES ('E1', 'Levi', 45002, 2312, 'D1', 'M1')
+INSERT INTO Employee VALUES ('E2', 'William', 25007, 3412, 'D1', 'M1')
+INSERT INTO Employee VALUES ('E3', 'Sammy', 55010, 5423, 'D2', 'M2')
+INSERT INTO Employee VALUES ('E4', 'Goddy', 30007, 2034, 'D2', 'M2')
+INSERT INTO Employee VALUES ('E5', 'Kirian', 65008, 5634, 'D10', 'M3')
+INSERT INTO Employee VALUES ('E6', 'Brian', 40012, 3545, 'D10', 'M3')
+INSERT INTO Employee VALUES ('E7', 'Lemuel', 50654, 8901, 'D5', 'M2')
+INSERT INTO Employee VALUES ('E8', 'Regan', 65090, 7356, 'D6', 'M5')
+INSERT INTO Employee VALUES ('E9', 'Grace', 40032, 9067, 'D9', 'M4')
+INSERT INTO Employee VALUES ('E10', 'Solang', 50035, 8632, 'D10', 'M4')
+
+
+INSERT INTO Manager VALUES ('M1', 'Denis',  'D3')
+INSERT INTO Manager VALUES ('M2', 'Ernest', 'D2')
+INSERT INTO Manager VALUES ('M3', 'Cyprain', 'D3')
+INSERT INTO Manager VALUES ('M4', 'Maxime', 'D1')
+INSERT INTO Manager VALUES ('M5', 'Zebedee',  'D4')
+
+INSERT INTO Department VALUES ('D1', 'IT')
+INSERT INTO Department VALUES ('D2', 'HR')
+INSERT INTO Department VALUES ('D3', 'Finance')
+INSERT INTO Department VALUES ('D4', 'Admin')
+INSERT INTO Department VALUES ('D5', 'Marketing')
+
+
+INSERT INTO Project VALUES ('P1', 'Data Migration', 'E1')
+INSERT INTO Project VALUES ('P1', 'Data Migration', 'E2')
+INSERT INTO Project VALUES ('P1', 'Data Migration', 'E3')
+INSERT INTO Project VALUES ('P2', 'Index Maintenance', 'M3')
+INSERT INTO Project VALUES ('P3', 'Virtualization',  'E3')
+INSERT INTO Project VALUES ('P4', 'Database Security', 'E4')
+INSERT INTO Project VALUES ('P5', 'Replication', 'E5')
+INSERT INTO Project VALUES ('P5', 'Replication', 'E6')
+INSERT INTO Project VALUES ('P6', 'Log Shipping', 'E2')
+INSERT INTO Project VALUES ('P7', 'Patches', 'M1')
+
+select * from Employee;
+select * from Department;
+select * from Manager;
+select * from Project;
+
+----Most important joins in sql are INNER JOINS, LEFT OUTER JOINS, RIGHT OUTER JOINS AND FULL JOINS
+
+--Tickets
+
+--1.  Fetch data from the tables showing the employee name and the department they belong to.
+
+		--Check which tables we need i.e (Employee + Dept tables). 
+
+--INNER JOIN/JOIN = Records that are matched on both tables. Records present on both tables
 
 
 
------- OR------------------------
+Select e.emp_name, d.dept_name					
+from employee e                                  --table after 'from' is left table (Employee) and table after 'Join' is Right table
+inner join department d 
+on e.Dept_ID = d.Dept_ID  --'on' is the condition of joining tables and what matters is the datatype on the columns and not								the naming of the columns. N:B: Datatype must be the same (ID columns= Intergal)
+
+
+--2. Fetch data for ALL employees names and the department they belong to.
+
+	--LEFT JOIN = Left table becomes main table. 
+	--Left join = inner join + any additional records in the left table
+Select e.emp_name, d.dept_name					
+from employee e                                
+Left join department d 
+on e.Dept_ID = d.Dept_ID
+
+--3. Fetch data for ALL employees names, their Salaries, SSN and the department they belong to.
+
+Select e.emp_name, e.salary, e.SSN, d.dept_name					
+from employee e                                
+left join department d 
+on e.Dept_ID = d.Dept_ID
+
+
+--4. Fetch data of Department names with ALL the manager names supervising the department.
+
+	--RIGHT JOIN = inner join + any additional records from the right table
+
+Select d.dept_name, m.manager_name					
+from department d                                
+right join Manager m 
+on d.Dept_ID = m.Dept_ID
+
+
+--5. Fetch data of ALL Department names with the manager names supervising the departments.
+Select d.dept_name, m.manager_name					
+from Department d                                
+left join Manager m 
+on d.Dept_ID = m.Dept_ID
+
+
+--6. Fetch details of ALL employees, their manager, their departments and ALL the projects they work on
+--NB: Task is to fetch only all the employees (Main Table)
+
+select e.emp_name, m.manager_name, d.dept_name, p.project_name
+from employee e
+left join department d on e.dept_id = d.dept_id
+Inner join manager m on e.manager_id = m.manager_id
+left join project p on p.project_member_id = e.emp_id  --The left join here applies to all tables up to that join 
+
+
+--7. Fetch details of ALL employees, their manager, their departments and the projects they work on
+
+select e.emp_name, d.dept_name, m.manager_name, p.project_name
+from employee e
+left join department d on e.dept_id = d.dept_id
+inner join manager m on e.manager_id = m.manager_id
+right join project p on p.project_member_id = e.emp_id
+
+--8. Fetch details of ALL employees, ALL manager, ALL departments and ALL the projects they work on
+
+--FULL JOINS = INNER JOIN 
+--			+ all remaining records from the left Table (return null values for any columns fetched)
+--			+ all remaining records from the right Table (return null values for any columns fetched)
+
+select e.emp_name, d.dept_name, m.manager_name, p.project_name
+from employee e
+FULL join department d on e.dept_id = d.dept_id
+FULL join manager m on e.manager_id = m.manager_id
+FULL join project p on p.project_member_id = e.emp_id
+
+
+--9. CROSS JOIN = returns CARTESIAN PRODUCT - every record from the left hand table will match with	records from the right side table
+select e.emp_name, d.dept_name
+from employee e 
+cross join department d;		--join condition not required in this type of join.
+								--returns 50 records which means that every single empoyee from employees table was matched with every single department from department table (10*5 = 50)
+								--used when u can't join two tables based on corresponding columns
+
+--NATURAL JOINS - SQL decides what is the join condition. i.e decides which columns the joins conditions should actually be on and not the user (Discouraged).
+
+select e.emp_name, d.Dept_name
+from employee e 
+natural join department d;			--It looks for tables sharing the same name no matter the data type
 
 
 
---JOINS
+--SELF JOINS - joining a table to itself.
+--To explain self joins, let's create a table called family
 
-//* WHAT IS A JOIN?
-A JOIN is a clause used to combine rows from two or more tables based on a related column between them*//
+CREATE TABLE Family
+(
+Member_ID nvarchar(5) NOT NULL PRIMARY KEY,
+Name VARCHAR(15) Not NULL,
+Age Int,
+Parent_ID nvarchar(5) NULL,
+)
 
---QUESTION???? Can we join two tables that do not have any Primary and Foreign key relationship???? Yes as long as the column values involved in the join can be converted to a compartible datatype.
+INSERT INTO Family VALUES ('F1', 'David', 4, 'F5')
+INSERT INTO Family VALUES ('F2', 'Carol', 10, 'F5')
+INSERT INTO Family VALUES ('F3', 'Micheal', 12, 'F5')
+INSERT INTO Family VALUES ('F4', 'Johnson', 36, 'F6')
+INSERT INTO Family VALUES ('F5', 'Maryben', 40, 'F6')
+INSERT INTO Family VALUES ('F6', 'Stephen', 70, 'F5')
+INSERT INTO Family VALUES ('F7', 'Robben', 6, 'F4')
+INSERT INTO Family VALUES ('F8', 'Asha', 8, 'F4')
 
-//* DIFFERENT TYPES OF JOINS
-1)INNER JOIN    (MSSQL Default JOIN where type of Join is not explicitly stated)
-2)LEFT JOIN OR LEFT OUTER JOIN
-3)RIGHT JOIN OR RIGHT OUTER JOIN
-4)FULL OUTER JOIN
-5)SELF JOIN
-6)CROSS JOIN
-
-1 - INNER JOIN: Returns "ONLY" records that have matching values in both (or all) tables. Does not return "ALL" records from any of the tables except if all the records in one or both tables actually have a match in the other table. (Much like an Intersection).
-	SQL SNYTAX FOR INNER JOIN: is INNER JOIN OR JOIN
-	SCENARIO WHEN YOU MIGHT NEED AN INNER JOIN: Like when you want to know customers who are actively shopping for various reasons ranging from targeted advertisement, customer reward programs etc. 
-
-2 - LEFT JOIN OR LEFT OUTER JOIN: Returns "ALL" records from the Left table and their corresponding match from the Right Table that has been joined. Since Left Join returns ALL Records from Left Table, if there is a record that does not have a corresponding match with the Right table, it will be displayed as NULL.
-    SQL SNYTAX FOR LEFT JOIN: is LEFT JOIN  OR LEFT OUTER JOIN
-	SCENARIO WHEN YOU MIGHT NEED A LEFT JOIN: 
-
-3 - RIGHT JOIN OR RIGHT OUTER JOIN: Returns "ALL" records from the Right table and their corresponding match from the Left Table that has been joined. Since Right Join returns ALL Records from Right Table, if there is a record that does not have a corresponding match with the Left table, it will be displayed as NULL.
-    SQL SNYTAX FOR LEFT JOIN: is RIGHT JOIN  OR RIGHT OUTER JOIN
-	SCENARIO WHEN YOU MIGHT NEED A RIGHT JOIN: 
-
-4 - FULL JOIN OR FULL OUTER JOIN: Returns "ALL" records from "BOTH" tables displaying their corresponding matches and their non-corresponding matches as well if there is any that does not have a corresponding match.
-    SQL SNYTAX FOR FULL JOIN: is FULL JOIN OR FULL OUTER JOIN
-	SCENARIO WHEN YOU MIGHT NEED A FULL JOIN: 
-
-5 - SELF JOIN: It is a regular join but the table is joined with itself. A SELF JOIN is a REGULAR JOIN and can be classided under any join INNER, OUTER and CROSS. Works in the same manner as a UNION Statement. The union operator is used to combine the result-set of two or more SELECT Statements. /Each SELECT Statement within the Union must have the same number of columns. /The columns must also have the similar datatypes/ The columns in each SELECT Statement must also be in the same order.
-
-6 - CROSS JOIN
- The SQL CROSS JOIN produces a result set which is the number of rows in the first table multiplied by the number of rows in the second table if no WHERE clause is used along with CROSS JOIN. This kind of result is known as the Cartesian Product. TAKE SPECIAL NOTE THAT a Cross Join cannot have an ON clause.
- -- What is CARTESIAN PRODUCT IN SQL? A Cartesian Product is a product of two sets of elements where each element in one set is multiplied by every other element of the other set.
-If WHERE clause is used with CROSS JOIN, it functions like an INNER JOIN.
+select * from Family;
 
 
-   ***NOTE THAT the UNION Operator SELECTs only distinct values by default. To allow duplicate values, use UNION ALL.
-
-	***N/B: THE ON STATEMENT TELLS YOU THE COMMON COLUMN ON BOTH TABLES.   *//
-
-
-
---------------------LAB WORK (PRACTICALS)-------------------------------
+--------------------MORE LAB WORK ON JOINS (PRACTICALS)-------------------------------
 
 
 CREATE DATABASE AmazonGlobalDB
@@ -1015,11 +1183,12 @@ SELECT * FROM AllOrders
 //* LAB WORK*//
 
 --1--INNER JOIN
-SELECT CMRCustomers.CustomerID, CMRCustomers.NameofCMRCustomers, AllOrders.OrderID, AllOrders.EmployeeID_Who_Served_Customer, AllOrders.OrderDate
-FROM CMRCustomers 
-INNER JOIN AllOrders 
-ON CMRCustomers.CustomerID = CMRCustomers.CustomerID
+SELECT LEFTTABLEcmr.CustomerID, LEFTTABLEcmr.NameofCMRCustomers, RIGHTTABLEallorders.OrderID, RIGHTTABLEallorders.EmployeeID_Who_Served_Customer, RIGHTTABLEallorders.OrderDate
+FROM CMRCustomers AS LEFTTABLEcmr
+INNER JOIN AllOrders AS RIGHTTABLEallorders
+ON LEFTTABLEcmr.CustomerID = RIGHTTABLEallorders.CustomerID
 
+-- If you run the above query, you will get this error    Ambiguous name column . This means two columns have the same column name. SQL Server Engine is confused as to which  Name  out of the two tables you are referring to. It is ambiguous   not clear.
 
 --2--LEFT OUTER JOIN
 SELECT LEFTTABLE.CustomerID, LEFTTABLE.NameofCMRCustomers, RIGHTTABLE.OrderID, RIGHTTABLE.EmployeeID_Who_Served_Customer, RIGHTTABLE.OrderDate
@@ -1028,7 +1197,7 @@ LEFT OUTER JOIN AllOrders AS RIGHTTABLE
 ON LEFTTABLE.CustomerID = RIGHTTABLE.CustomerID
 
 --n/b if you want to join only NONE MATCHING Rows from the LEFTTABLE instead you can add the WHERE clause below to the script above
-WHERE RIGHTTABLE.OrderID IS NOT NULL
+WHERE RIGHTTABLE.OrderID IS NULL
 
 
 --3--RIGHT OUTER JOIN
@@ -1083,7 +1252,6 @@ FROM StudentsPeerSupervision AS STUDENT
 LEFT JOIN StudentsPeerSupervision AS SUPERVISOR
 ON  STUDENT.StudentWhoSupervisedByID = SUPERVISOR.StudentID
 
-
 --DEMONSTRATING SELF JOIN CLASSIFIED AS "RIGHT SELF JOIN".
 SELECT STUDENT.StudentName AS STUDENT, SUPERVISOR.StudentName AS SUPERVISOR
 FROM StudentsPeerSupervision AS STUDENT
@@ -1109,9 +1277,9 @@ CROSS JOIN StudentsPeerSupervision  SUPERVISOR
 
 
 
-
 --6 --CROSS JOIN--
 Use AmazonGlobalDB
+
 SELECT *  
 FROM CMRCustomers
 CROSS JOIN AllOrders
@@ -1134,59 +1302,133 @@ FULL JOIN
 FULL JOIN
     AllOrders ON USACustomers.CustomerID = CMRCustomers.CustomerID
 
-----
 
 
------ EXPLAINING USE OF ALIAS IN JOINS
-
- ---- ALIASES ARE USED IN JOINS WHEN TABLES NAMES ARE THE SAME. IF TABLE AND/OR COLUMN NAMES ARE DIFFERENT, YOU WONT NEED TO USE ALIASES AND THE SAME RESULT WILL BE RETURNED. SEE EXAMPLE BELOW
-
- USE AmazonGlobalDB
-
-CREATE TABLE CMRCustomers2 (
-CustomerID Varchar(MAX) NOT NULL, NameofCMRCustomers Varchar(255) NOT NULL, Address Varchar(255), City Varchar(100));
-
-INSERT INTO CMRCustomers2 VALUES ('CMR99001', 'Alexia', 'Silicon Valley Annex', 'Sabongari')
-INSERT INTO CMRCustomers2 VALUES ('CMR99002', 'Jak', 'Man O War Bay', 'Limbe')
-INSERT INTO CMRCustomers2 VALUES ('CMR99003', 'Minette', 'Beside Paul Biya' ,'Yaounde')
-INSERT INTO CMRCustomers2 VALUES ('CMR99004', 'William', 'Carrefour je rater ma vie', 'Douala')
-INSERT INTO CMRCustomers2 VALUES ('CMR99005', 'Mr Cedric', 'Liberty Square', 'Buea')
-INSERT INTO CMRCustomers2 VALUES ('CMR99006', 'Dr. Ernest', 'Buy1Take2 Boulevard','Mamfe')
-INSERT INTO CMRCustomers2 VALUES ('CMR99007', 'Amambo', ' Carrefour Tu dors, ta vie dort', 'Yaounde')
-INSERT INTO CMRCustomers2 VALUES ('CMR99008', 'Elvis', 'Apres Chapelle Obili' ,'Yaounde')
-INSERT INTO CMRCustomers2 VALUES ('CMR99009' ,'Ransom', 'Commercial Avenue', 'Bamenda')
-INSERT INTO CMRCustomers2 VALUES ('CMR990010', 'Barrack Ogama', 'Behind Banga School', 'Kumba')
 
 
-Use AmazonGlobalDB
-CREATE TABLE AllOrders2 (
-OrderID Varchar(MAX) NOT NULL, ClientID Varchar(MAX) NOT NULL, EmployeeID_Who_Served_Customer Varchar(MAX), OrderDate date);
+---===========UNION OPERATORS===========---------
+	/* The UNION operator is used to combine the result-set of two or more SELECT statements.
 
-INSERT INTO AllOrders2 VALUES ('34','CMR99009', 'DME100', '2021-12-06')
-INSERT INTO AllOrders2 VALUES ('73', 'CMR99004','DME200', '2021-05-05')
-INSERT INTO AllOrders2 VALUES ('68','CMR99006', 'DME400', '2021-11-11')
-INSERT INTO AllOrders2 VALUES ('102','USA121212', 'DME800', '2021-01-01')
-INSERT INTO AllOrders2 VALUES ('27','CMR99005', 'DME600', '2021-03-03')
-INSERT INTO AllOrders2 VALUES ('44','CMR99004', 'DME700', '2021-02-02')
-INSERT INTO AllOrders2 VALUES ('100','USA131313', 'DME100', '2020-12-25')
-INSERT INTO AllOrders2 VALUES ('101','USA141414', 'DME200', '2020-12-24')
-INSERT INTO AllOrders2 VALUES ('54','CMR99002', 'DME200', '2020-12-22')
-INSERT INTO AllOrders2 VALUES ('82','CMR99004', 'DME200', '2021-04-04')
+-Every SELECT statement within UNION must have the same number of columns
+-The columns must also have similar data types
+-The columns in every SELECT statement must also be in the same order
 
--- NOW TAKE A LOOK AT THE INNER JOIN SYNTAXES. NOT ALIAS ARE REQUIRED. TABLE AND COLUMN NAMES ARE DIFFERENT BUT THE TWO TABLES ARE STILL RELATED IN THE DATA THAT IS CONTAINED WITHIN THEM.
+UNION Syntax */
 
-SELECT CustomerID, NameofCMRCustomers, OrderID, EmployeeID_Who_Served_Customer, OrderDate
-FROM CMRCustomers2
-INNER JOIN AllOrders2
-ON CustomerID = ClientID
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
 
---this applies to all types of JOINS
+/*
+UNION ALL Syntax
+The UNION operator SELECTs only distinct values by default. To allow duplicate values, use UNION ALL:
+*/
+SELECT column_name(s) FROM table1
+UNION ALL
+SELECT column_name(s) FROM table2;
+
+--The column names in the result-set are usually equal to the column names in the first SELECT statement.
+
+	/*NOTE THAT the UNION Operator SELECTs only distinct values by default. To allow duplicate values, use UNION ALL.*/
+
+								--DEMO-----
 
 
---HOMEWORK
---READ about 
---1) CTE
---2) VARIABLES
---3) PARAMETERS
---4) Functions and store procedures
---5 VIEWS
+--1. UNION Example: Combining Two Queries
+--Combine employees and business contacts into a single list of names, removing duplicates.(Slower because it filters or searches through the database to remove duplicates)*/
+
+USE AdventureWorks2022;
+GO
+
+select [BusinessEntityID],FirstName,Lastname FROM Person.Person
+
+UNION 
+
+select [BusinessEntityID],FirstName,Lastname FROM Person.Person
+
+
+use [SQLCommands]
+select [CustomerID],[FName],[LastName] from [dbo].[Customer]
+UNION ALL
+select [CustomerID],[FName],[LastName] from [dbo].[Customer]
+order by customerID
+
+
+
+SELECT 
+    FirstName, LastName, 'Employee' AS Source
+FROM Person.Person AS p
+INNER JOIN HumanResources.Employee AS e
+    ON p.BusinessEntityID = e.BusinessEntityID
+
+UNION
+
+SELECT 
+    FirstName, LastName, 'Business Contact' AS Source
+FROM Person.Person AS p
+INNER JOIN Person.BusinessEntityContact AS bec
+    ON p.BusinessEntityID = bec.BusinessEntityID;
+
+
+--2. UNION ALL Example: Including Duplicates (Faster, presents results without filtering)
+SELECT 
+    FirstName, LastName, 'Employee' AS Source
+FROM Person.Person AS p
+INNER JOIN HumanResources.Employee AS e
+    ON p.BusinessEntityID = e.BusinessEntityID
+
+UNION ALL
+
+SELECT 
+    FirstName, LastName, 'Business Contact' AS Source
+FROM Person.Person AS p
+INNER JOIN Person.BusinessEntityContact AS bec
+    ON p.BusinessEntityID = bec.BusinessEntityID;
+
+
+
+				-- SELECT INTO STATEMENTS----
+/* SELECT INTO in SQL Server is a statement used to create a new table from the result of a query. It selects rows from one or more tables and inserts them into a new table (which does not have to exist beforehand).*/
+--Basic Syntax
+
+SELECT column1, column2, ...
+INTO NewTable
+FROM ExistingTable
+WHERE condition;
+
+-- Example 1: Copy entire table
+use AdventureWorks2022
+select count(1) from [HumanResources].[Employee]
+select count(1) from [dbo].[EmployeeBackup]
+
+drop table [dbo].[EmployeeBackup]
+
+SELECT *
+INTO EmployeeBackup
+FROM [HumanResources].[Employee];
+
+--Example 2: Copy with filter
+SELECT [BusinessEntityID], [NationalIDNumber], [HireDate]
+INTO [dbo].EmployeeGender
+FROM [HumanResources].[Employee]
+WHERE [Gender] = 'M';
+--This creates EmployeeGender table containing only employees from a certain gender.
+
+
+--Example 3: Copy with joins
+SELECT e.[BusinessEntityID], e.[NationalIDNumber], e.[HireDate], p.[FirstName], p.[LastName],p.[Title]
+INTO AllEmployeeRIGHTJOIN
+FROM [HumanResources].[Employee] e
+RIGHT JOIN [Person].[Person] p ON e.[BusinessEntityID] = p.BusinessEntityID;
+
+select * from [dbo].[AllEmployeeRIGHTJOIN]
+
+--Example 4: Copy data from one DB to another using SELECT INTO 
+SELECT [BusinessEntityID], [NationalIDNumber], [HireDate]
+INTO [DEMO].[dbo].EmployeeGender
+FROM [AdventureWorks2022].[HumanResources].[Employee]
+WHERE [Gender] = 'M';
+
+
+
+
