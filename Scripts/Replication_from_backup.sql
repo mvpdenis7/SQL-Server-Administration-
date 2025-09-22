@@ -1,0 +1,1 @@
+USE [DatabaseName] EXEC sp_addsubscription @publication = N'PubName' , @subscriber = N'ServerName' , @destination_db = N'DestinationDBNAme' , @subscription_type = N'pull' , @article= 'all' , @update_mode = N'read only' , @subscriber_type=0 , @sync_type = N'initialize with backup' , @backupdevicetype= 'Disk' , @backupdevicename= 'path\example.trn' -- the last Log file GO
