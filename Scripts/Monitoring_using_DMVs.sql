@@ -11,6 +11,7 @@ CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) AS t
 WHERE r.session_id <> @@SPID
 ORDER BY r.total_elapsed_time DESC;
 
+
 -- Who's waiting on whom (quick blocking tree)
 SELECT w.session_id AS waiter_sid, w.wait_type, w.resource_description,
        w.blocking_session_id AS blocker_sid,
@@ -58,11 +59,14 @@ FROM sys.dm_exec_query_stats AS qs
 CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) AS st
 ORDER BY qs.total_logical_writes DESC;
 
+
+
 -- Server-level waits (since last restart or last clear)
 SELECT wait_type, waiting_tasks_count, wait_time_ms, signal_wait_time_ms
 FROM sys.dm_os_wait_stats
 WHERE wait_type NOT LIKE 'SLEEP_%' AND wait_type NOT IN ('BROKER_TASK_STOP','BROKER_TO_FLUSH','SQLTRACE_BUFFER_FLUSH','XE_TIMER_EVENT','XE_DISPATCHER_WAIT')
 ORDER BY wait_time_ms DESC;
+
 
 -- Per-database waits (SQL 2016 SP2+/2019+)
 SELECT s.session_id,
@@ -73,6 +77,7 @@ FROM sys.dm_exec_session_wait_stats AS sws
 JOIN sys.dm_exec_sessions s ON s.session_id = sws.session_id
 LEFT JOIN sys.dm_exec_requests r ON r.session_id = s.session_id
 ORDER BY sws.wait_time_ms DESC;
+
 
 -- Run in tempdb to see current usage
 USE tempdb;
@@ -86,6 +91,7 @@ FROM sys.dm_db_file_space_usage;
 SELECT *
 FROM sys.dm_exec_query_memory_grants
 ORDER BY requested_memory_kb DESC;
+
 
 --Transaction log health (2019+ has dm_db_log_stats)
 -- Per database log summary (2019+)
@@ -102,6 +108,7 @@ FROM sys.dm_io_virtual_file_stats(NULL,NULL) AS vfs
 JOIN sys.master_files AS mf
   ON mf.database_id = vfs.database_id AND mf.file_id = vfs.file_id
 ORDER BY (vfs.io_stall_read_ms + vfs.io_stall_write_ms) DESC;
+
 
 --Index health: usage, fragmentation, and missing indexes
 -- Index usage since last restart
@@ -121,6 +128,7 @@ FROM sys.dm_db_index_physical_stats(DB_ID(), NULL, NULL, NULL, 'LIMITED') AS ips
 JOIN sys.indexes AS i ON i.object_id = ips.object_id AND i.index_id = ips.index_id
 WHERE ips.page_count >= 1000
 ORDER BY ips.avg_fragmentation_in_percent DESC;
+
 
 -- Missing indexes (use with caution; validate!)
 SELECT DB_NAME(mid.database_id) AS db_name, migs.user_seeks, migs.user_scans,
