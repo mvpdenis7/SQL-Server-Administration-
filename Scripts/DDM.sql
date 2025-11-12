@@ -19,7 +19,6 @@ Use master
 Create Database DDM
 
 use DDM
-
 -- Creating a table
 CREATE TABLE Membership (
     MemberID        int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED,
@@ -90,10 +89,11 @@ Select * from Membership;
 
 
 /*Grant Unmask access to this user to enable him to view all original data */
+--Please execute this command on a different WINDOW
 GRANT UNMASK to TESTUSER;
 
 EXECUTE AS USER = 'TESTUSER';
-Select * from Membership;
+Select * from data.Membership;
 REVERT
 GO
 
@@ -132,7 +132,7 @@ GRANT SELECT ON SCHEMA::Data TO MaskingTestUser;
 -- impersonate for testing:
 EXECUTE AS USER = 'MaskingTestUser';
 
-SELECT * FROM Data.Membership;
+SELECT * FROM data.Membership;
 
 REVERT;
 
@@ -144,6 +144,7 @@ ALTER TABLE Data.Membership
 ALTER COLUMN LastName VARCHAR(100) MASKED WITH (FUNCTION = 'default()');
 
 --Grant permissions to view unmasked data
+--RUN on a Different WINDOW
 GRANT UNMASK TO MaskingTestUser;
 
 EXECUTE AS USER = 'MaskingTestUser';
@@ -153,10 +154,12 @@ SELECT * FROM Data.Membership;
 REVERT;
 
 -- Removing the UNMASK permission
+--Next window
 REVOKE UNMASK TO MaskingTestUser;
 
 
 --Drop a dynamic data mask
+--Next window
 ALTER TABLE Data.Membership
 ALTER COLUMN LastName DROP MASKED;
 
@@ -230,6 +233,7 @@ ALTER ROLE db_datareader ADD MEMBER ServiceLead;
 ALTER ROLE db_datareader ADD MEMBER ServiceManager;
 
 ALTER ROLE db_datareader ADD MEMBER ServiceHead;
+
 
 --9 Grant different UNMASK permissions to users:
 --Grant column level UNMASK permission to ServiceAttendant
