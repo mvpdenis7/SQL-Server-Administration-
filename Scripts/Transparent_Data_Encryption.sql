@@ -17,6 +17,55 @@ However, tempdb is automatically encrypted when a user database enabled TDE, but
 TDE doesn't provide encryption across communication channels.*/
 
 
+--- Clean up if TDA is already enabled
+SELECT * FROM sys.certificates
+
+SELECT 
+    db.name AS DatabaseName,
+    db.is_encrypted,
+    dek.encryption_state,
+    dek.key_algorithm,
+    dek.key_length
+FROM sys.databases db
+LEFT JOIN sys.dm_database_encryption_keys dek
+    ON db.database_id = dek.database_id;
+GO
+
+ALTER DATABASE EncryptDB SET ENCRYPTION OFF
+
+USE EncryptDB;
+GO
+DROP DATABASE ENCRYPTION KEY;
+GO
+
+
+USE master;
+GO
+DROP CERTIFICATE [TDE_Cert_Server1];
+GO
+
+
+USE master;
+GO
+DROP MASTER KEY;
+GO
+
+
+SELECT 
+    db.name, 
+    db.is_encrypted,
+    dek.encryption_state
+FROM sys.databases db
+LEFT JOIN sys.dm_database_encryption_keys dek
+    ON db.database_id = dek.database_id
+WHERE db.is_encrypted = 1;
+GO
+-- Restart the instance
+
+
+
+	--Execise
+
 --Use master and create db
 Use Master
 Create Database EncryptDB
