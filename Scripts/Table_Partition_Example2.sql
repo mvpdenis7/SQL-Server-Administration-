@@ -1,4 +1,5 @@
 --Step 1: Create File Group
+Create database PartitioningDB
 
 ALTER DATABASE PartitioningDB
 ADD FILEGROUP January
@@ -22,7 +23,7 @@ ALTER DATABASE PartitioningDB
 ADD FILEGROUP July
 GO
 ALTER DATABASE PartitioningDB
-ADD FILEGROUP Avgust
+ADD FILEGROUP August
 GO
 ALTER DATABASE PartitioningDB
 ADD FILEGROUP September
@@ -52,7 +53,7 @@ ALTER DATABASE [PartitioningDB]
         FILEGROWTH = 1024 KB
     ) TO FILEGROUP [December]
 
-Check the files created
+--Check the files created
 SELECT 
 name as [FileName],
 physical_name as [FilePath] 
@@ -72,7 +73,7 @@ CREATE PARTITION SCHEME PartitionBymonth
 AS PARTITION PartitioningBymonth
 TO (January, February, March, 
     April, May, June, July, 
-    Avgust, September, October, 
+    August, September, October, 
     November, December);
 
  --Step 5 Partition table using the scheme
@@ -82,13 +83,10 @@ MonthlyReport varchar(max))
 ON PartitionBymonth (ReportDate);
 GO
 
+truncate table  Reports
  --Test data insert
 INSERT INTO Reports (ReportDate,MonthlyReport)
 SELECT '20140108', 'ReportJanuary' 
-
-
-
-
 UNION ALL
 SELECT '20140209', 'ReportFebryary' UNION ALL
 SELECT '20140309', 'ReportMarch' UNION ALL
@@ -100,12 +98,13 @@ SELECT '20140809', 'ReportAugust' UNION ALL
 SELECT '20140911', 'ReportSeptember' UNION ALL
 SELECT '20141012', 'ReportOctober' UNION ALL
 SELECT '20141109', 'ReportNovember' UNION ALL
-SELECT '20141209', 'ReportDecember' UNION ALL
-SELECT '20140409', 'ReportApril'
+SELECT '20141209', 'ReportDecember'
+
 
 Select * from [dbo].[Reports]
+where ReportDate ='20140919'
 
-Check Data in various partition
+--Check Data in various partition
 SELECT 
 p.partition_number AS PartitionNumber,
 f.name AS PartitionFilegroup, 
@@ -117,3 +116,5 @@ WHERE OBJECT_NAME(OBJECT_ID) = 'Reports'
 
 
 --Further Test
+INSERT INTO Reports (ReportDate,MonthlyReport)
+SELECT '20140919', 'ZZZZZ' 
