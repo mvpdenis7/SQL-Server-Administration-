@@ -45,6 +45,7 @@ INSERT INTO AccountHolder VALUES  (101, 'John', 'Magufuli', 'M', 'TANZANIA', 987
 						   (107, 'Nelson', 'Mandela', 'M', 'SOUTH AFRICA', 123456789,  200000),
 						   (108, 'Abraham', 'Lincoln', 'M', 'USA', 568977710,  700000),
 						   (109, 'Abraham', 'Lima', 'M', 'YUGOSLAVIA', 665482000, 9700000),
+						   (110, 'Richard','Nawini','M','USA',83784740,98345241);
 
 
 -- Add another table
