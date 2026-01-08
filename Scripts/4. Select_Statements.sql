@@ -277,15 +277,22 @@ SELECT TOP 50 PERCENT * FROM AccountHolder;
 
 -------=======DML COMMANDS=====================================
 --Creating Database
+Use Master
+DROP DATABASE IF EXISTS SQLCommands
+
 USE master
 CREATE DATABASE SQLCommands
 
+Use Master
+DROP DATABASE IF EXISTS SQLCommands_Demo
+
 Create Database SQLCommands_Demo
+
 
 Use SQLCommands
 
 --CREATE TABLE
-CREATE TABLE [Customer] (
+CREATE TABLE [Customer1] (
   [CustomerID] nvarchar(2) not null,
   [FirstName] nvarchar(20),
   [LastName] nvarchar(20),
@@ -305,7 +312,7 @@ CREATE TABLE [NewOrders] (
   [OrderDate] date
   );
 
-
+use SQLCommands
 CREATE TABLE [Product] (
   [ProductID] int not null,
   [OrderNumber] nvarchar(3) not null,
@@ -313,13 +320,17 @@ CREATE TABLE [Product] (
   [ProductType] nvarchar(30),
   );
 
+
+
 -- INSERT VALUES INTO TABLE
 use SQLCommands
 INSERT INTO dbo.Customer
-VALUES ('B1',
+VALUES ('B1', 'Randy', 'Egbu', 'washington street', 'Seatle', 87824, 87756525,'USA');
+
+
 
 INSERT INTO [dbo].[Customer]
-VALUES --('A1', 'Peter', 'Schmitt', 'BM Makepe', 'Douala', '007', '7777777','CMR'),
+VALUES ('A1', 'Peter', 'Schmitt', 'BM Makepe', 'Douala', '007', '7777777','CMR'),
 	   ('A2', 'Petra', 'Williams', 'Bekoko', 'Texas', '003', '3333333','USA'),
 	   ('A3', 'Chelsie', 'Moore', 'Tankwa', 'Califinia', '004', '4444444','USA'),
 	   ('A4', 'Davila', 'Yachin', 'Lendi','Colorado', '005', '5555555','USA'),
@@ -338,7 +349,7 @@ VALUES ('A6', 'John', 'Clarkson', 'Njeleng 5', 'Bafoussam', '187', '7778888','NG
 	   ('A7', 'Princess', 'Lukong', 'Mile 10', 'Kumbo', '675', '3876533','CMR'),
 	   ('A8', 'Chelsa', 'Vincent', 'Bagang', 'Bafanji', '0074', '4449874','CHAD'),
 	   ('A9', 'Davila', 'Kana', 'PK 11','Bertoua', '025', '2987555','USA'),
-	   ('B1', 'Mira', 'Mambila', 'Bonaberi', 'Douala', '192', '2274122','NAMIBIA');
+	   --('B1', 'Mira', 'Mambila', 'Bonaberi', 'Douala', '192', '2274122','NAMIBIA');
 
 
 INSERT INTO [dbo].[NewOrders]
@@ -349,8 +360,14 @@ VALUES ('1AB', 'A1', 'Douala', '12/12/2019'),
 	   ('5AB', 'A5', 'Washington', '04/18/2020');
 
 select * from [dbo].[NewOrders]
+
 delete from [dbo].[NewOrders]
-where  CustomerID ='A1'
+where  CustomerID ='A1' OR CustomerID ='A2'
+
+TRUNCATE TABLE [dbo].[NewOrders]
+
+
+
 
 INSERT INTO [dbo].[NewOrders]
 VALUES ('2AC', 'A6', 'Douala', '1/12/2018'),
@@ -359,7 +376,10 @@ VALUES ('2AC', 'A6', 'Douala', '1/12/2018'),
 	   ('5AC', 'A9', 'Colorado', '08/03/2020'),
 	   ('6AC', 'B1', 'Washington', '04/18/2012');
 
-drop table Product
+--add extra column to table product
+ALTER TABLE [Product]
+ADD Price money NOT NULL
+
 INSERT INTO [dbo].[Product]
 VALUES ('1001', '1AB', '19', 'laptop',1003),
 	   ('1002', '2AB', '12', 'Jeans',1004),
@@ -381,6 +401,17 @@ select * from [NewOrders]
 select * from product
 
 
+--2 Update statements
+
+select * from [dbo].[Customer]
+use sqlcommands
+
+truncate table customer
+
+UPDATE Customer SET Firstname = 'John' 
+where customerid ='A3'
+
+
 
 
 
@@ -390,7 +421,7 @@ select * from product
 
  --2. Drop -  delete a whole database or just a table.The DROP statement destroys the objects like an existing database, table, index, or view.
 
-Drop table Customer
+Drop table Customer1
 --difference between delete and truncate
 select * from Customer
 delete from customer
@@ -409,19 +440,30 @@ delete from customer
  ALTER DATABASE SQLCommands_Demo
 SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 
+--Set Multi User mode
+ALTER DATABASE SQLCommands_Demo
+SET MULTI_USER;
+
+
 -- Alter to Rename database
-ALTER DATABASE SQLCommands_Demo MODIFY NAME = SQLCommands;
+ALTER DATABASE SQLCommands_Demo MODIFY NAME = SQLCommands1;
+
+ ALTER DATABASE SQLCommands1
+SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 
 -- Optional: set back to MULTI_USER
-ALTER DATABASE SQLCommands
+ALTER DATABASE SQLCommands1
 SET MULTI_USER;
 
 
  -- DROP command to remove a database
- Drop Database SQLCommands
+ALTER DATABASE SQLCommands1
+SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+ Drop Database SQLCommands1
 
 
- --Alter_Command to remove a column
+--Alter_Command to remove a column
 ALTER TABLE Customer
 DROP COLUMN Firstname;
 
@@ -447,7 +489,7 @@ Rename COLUMN Price TO Amount;--Rename works only with postgre
 use AdventureWorks2019
 select * from [Production].[Product]
 
-exec sp_rename 'Production.Product.PoductID', 'ID', 'COLUMN';
+exec sp_rename 'Product.Price', 'Amount', 'COLUMN';
 
 
 --use sp_rename to change column names. Syntax= 'TableName.Oldcolumn', 'NewColumn', 'COLUMN';
@@ -464,7 +506,7 @@ select * from customers
 
 -- Rename Table name
 
-EXEC sp_rename 'Customer', 'Customers';
+EXEC sp_rename 'Customers', 'Customer';
 
 
 -- Check dependencies
@@ -479,6 +521,9 @@ WHERE referenced_entity_name = 'Proc';  -- or 'OldTableName'
  --4. Truncate: Removes all data from a table, typically bypassing a number of integrity enforcing mechanisms. 
 BEGIN TRANSACTION
 TRUNCATE TABLE Product
+Rollback tran
+rollback
+rollback transaction
 
 --VALIDATE ACTION
 COMMIT
@@ -497,7 +542,7 @@ SELECT * FROM Product
 
 Begin Transaction
  DELETE FROM Product
- --WHERE ProductID ='1012'
+ WHERE ProductID ='1012'
  COMMIT TRAN
 
  Rollback;
@@ -511,9 +556,9 @@ SELECT * FROM Product;
 
 --1.1 Insert into an existing Table: Already seen above. But let´s add 1 more value to the table (new customer)
 
-INSERT INTO [dbo].[Customers]
-VALUES ('C1', 'Mike', 'Kuwan', 'Ghanastreet', 'Bamenda', '237', '0237778','USA');
-select * from customers
+INSERT INTO [dbo].[Customer]
+VALUES ('P1', 'Kuwan', 'Ghanastreet', 'Bamenda', '237', '0237778','USA');
+select * from customer
 
 --1.2: Insert Records from an existing table into a new table
 
@@ -523,7 +568,7 @@ CREATE TABLE [ProductNew] (
   [OrderNumber] nvarchar(3) not null,
   [Quantity] int,
   [ProductType] nvarchar(30),
-  --[Price] Decimal (10,2), --*N.B: The existing table was updated with a new coloum "Price"
+  [Price] Decimal (10,2), --*N.B: The existing table was updated with a new coloum "Price"
   );
 
   select * from Product
@@ -532,8 +577,8 @@ CREATE TABLE [ProductNew] (
 
 
 --Insert records into the newly created table
-INSERT INTO ProductNew (ProductID, OrderNumber, Quantity, ProductType)
-SELECT ProductID, OrderNumber, Quantity, ProductType
+INSERT INTO ProductNew (ProductID, OrderNumber, Quantity, ProductType,Price)
+SELECT ProductID, OrderNumber, Quantity, ProductType, Amount
 FROM Product;
 
 Select * from ProductNew
@@ -545,8 +590,8 @@ Delete from ProductNew
 
 --Or insert only specific rows into the new table
 begin tran
-INSERT INTO Product (ProductID, OrderNumber, Quantity, ProductType)
-SELECT ProductID, OrderNumber, Quantity, ProductType
+INSERT INTO Product (ProductID, OrderNumber, Quantity, ProductType, Amount)
+SELECT ProductID, OrderNumber, Quantity, ProductType, Price
 FROM ProductNew
 WHERE ProductType = 'Laptop';
 
@@ -560,25 +605,30 @@ commit tran
 select * from [dbo].[Customer]
 use sqlcommands
 Begin Tran
-UPDATE Customer SET lastname = 'Kiawi' 
-where customerid ='E1'
+UPDATE Customer SET Familyname = 'Kiawi' 
+where customerid ='A8'
 
+rollback tran
+
+commit tran
 
 begin tran
 insert into Customer 
 values 
-('E2', 'Tim','34 Corporate Drive', 'Stafford', 77479, 553545, 'USA', 'David')
+('E2', 'Tim','34 Corporate Drive', 'Stafford', 77479, 553545, 'USA')--, 'David')
+
+Commit
 
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 ALTER DATABASE [SQLCommands] SET READ_COMMITTED_SNAPSHOT ON;
 begin tran
 insert into Customer 
 values 
-('E3', 'Tim','34 Corporate Drive', 'Stafford', 77478, 554545, 'USA', 'David')
+('E4', 'Tim','34 Corporate Drive', 'Stafford', 77478, 554545, 'USA')--, 'David')
 
 select * from [dbo].[Customer]
 
-sp_whoisactive
+sp_whoisactive 
 sp_who2
 
 commit tran
@@ -595,7 +645,7 @@ SELECT * FROM Customer;
 
 --Update with "Case"
 Begin Tran
-UPDATE Product SET Price = CASE
+UPDATE Product SET Amount = CASE
     WHEN ProductID = 1001 THEN 755.00
     WHEN ProductID = 1002 THEN 45.00
     WHEN ProductID = 1003 THEN 130.00
@@ -637,6 +687,8 @@ Begin Tran
 Select FirstName + '' + LastName as FULLNAME from Customer --You can use / or -- inside the string to separate both information
 Select OrderNumber + '-' + Producttype as Productvalue from Product 
 
+
+
 --More DEMO on Locks
 
 --SQL Locks
@@ -654,6 +706,7 @@ Regular intent locks: Intent exclusive (IX) , Intent shared (IS), and Intent upd
 
 Conversion locks: Shared with intent exclusive (SIX), Shared with intent update (SIU), and Update with intent exclusive (UIX).*/
 
+--ENDED HERE 1/7/2025
 
 --------*****TCL*****------------
 --Commit 
@@ -1429,7 +1482,6 @@ SELECT [BusinessEntityID], [NationalIDNumber], [HireDate]
 INTO [DEMO].[dbo].EmployeeGender
 FROM [AdventureWorks2022].[HumanResources].[Employee]
 WHERE [Gender] = 'M';
-
 
 
 
